@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>View Code</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/plugin/prism/prism.css" th:href="@{/plugin/prism/prism.css}">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <style>
+        .submitInfo > div {
+            margin: 20px;
+        }
+
+        .submitInfo > div > div {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(4)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-margin-large">
+    <div class="ui  container">
+
+        <div th:if="${submission!=null}" class="ui attached segment m-shadow-small">
+            <a style="display: block" th:href="@{/problem/{pid}(pid=${submission.pid})}" class="ui header center aligned"
+               th:if="${submission.contestId}==null"
+               th:text="|${submission.problem.originOJ} - ${submission.problem.title}|">HDU - Hello world</a>
+            <div th:if="${submission.contestId}!=null" class="ui centered">
+
+              <th:block th:if="${submission.contestProblem!=null}">
+                  <a style="display: block"
+                     th:href="@{/contest/{cid}/problem/{num}(cid=${submission.contestId},num=${submission.contestProblem.num})}"
+                     class="ui header text center aligned" th:if="${!#strings.isEmpty(submission.contestProblem.alias)}"
+                     th:text="|${submission.contest.title} (${submission.contestProblem.num}) - ${submission.contestProblem.alias}|">HDU
+                      - Hello world</a>
+                  <a style="display: block"
+                     th:href="@{/contest/{cid}/problem/{num}(cid=${submission.contestId},num=${submission.contestProblem.num})}"
+                     class="ui header text center aligned" th:if="${#strings.isEmpty(submission.contestProblem.alias)}"
+                     th:text="|${submission.contest.title} (${submission.contestProblem.num}) - ${submission.problem.title}|">HDU
+                      - Hello world</a>
+              </th:block>
+                <th:block th:if="${submission.contestProblem==null}">
+
+                    <div style="display: block"
+                       class="ui header text center aligned"
+                       th:text="|${submission.contest.title} (Question does not exist) |">HDU
+                        - Hello world</div>
+                </th:block>
+            </div>
+
+            <div class="submitInfo">
+                <div class="m-inline-block">
+                    <div class="m-inline-block">
+                        Submit Time:
+                    </div>
+                    <div class="m-inline-block" th:text="${#dates.format(submission.subTime,'yyyy-MM-dd HH:mm:ss')}">
+                        2020-06-26 15:28:04
+                    </div>
+                </div>
+                <div class="m-inline-block">
+                    <div class="m-inline-block">
+                        Language:
+                    </div>
+                    <div class="m-inline-block" th:text="${submission.trueLanguage}">
+                        G++
+                    </div>
+                </div>
+                <div class="m-inline-block">
+                    <div class="m-inline-block">
+                        Length:
+                    </div>
+                    <div class="m-inline-block" th:text="${submission.length}">
+                        848
+                    </div>
+                </div>
+                <div class="m-inline-block">
+                    <div class="m-inline-block">
+                        Time:
+                    </div>
+                    <div class="m-inline-block" th:text="|${submission.time} ms|">
+                        4 ms
+                    </div>
+                </div>
+                <div class="m-inline-block">
+                    <div class="m-inline-block">
+                        Memory:
+                    </div>
+                    <div class="m-inline-block" th:text="|${submission.memory} K|">
+                        492 K
+                    </div>
+                </div>
+            </div>
+            <div th:if="${submission.additionalInfo}!=null" class="ui warning message m-margin-bottom-large" style="margin-top: 0" th:utext="${submission.additionalInfo}">
+
+            </div>
+            <div>
+                <pre class="line-numbers" th:classappend="${prismJS}"><code th:text="${submission.sourceCode}">
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main() {
+    ios::sync_with_stdio(false);
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n;
+        cin >> n;
+        long long ans = 0;
+        while (n >= 10) {
+            long long cnt = n / 10;
+            ans = ans + cnt * 10  ;
+            n = n - cnt * 10+cnt;
+        }
+        ans += n;
+        cout << ans << endl;
+    }
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+
+        <div th:if="${submission==null}" class="ui warning message">
+            <div class="ui header center aligned">you have no privilege to view the code.</div>
+        </div>
+    </div>
+
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+<script src="../../static/plugin/prism/prism.js" th:src="@{/plugin/prism/prism.js}"></script>
+
+
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                $('[name=OJ]').val(value);
+                var userName = $('[name=userName]').val();
+                var probId = $('[name=probId]').val();
+                console.log(value);
+                window.location = '[[@{/status/list/1?}]]' + 'OJ=' + value + '&probId=' + probId + '&userName=' + userName;
+            }
+        });
+
+    $('[name=userName]').change(function () {
+        $('[name=userName]').val($(this).val());
+
+    })
+    $('[name=probId]').change(function () {
+        $('[name=probId]').val($(this).val());
+
+    })
+</script>
+
+</body>
+</html>

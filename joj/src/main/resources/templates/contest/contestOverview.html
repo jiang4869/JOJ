@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-container-large">
+    <div class="ui fluid container m-margin-large">
+
+       <div th:replace="contest/_contestFragments::contestInfo">
+           <!--比赛简介-->
+           <div class="ui stackable segment">
+               <div class="ui fluid container">
+                   <div class="ui grid">
+                       <div class="four wide column text left aligned fluid container">
+                           <strong>Begin:</strong> <span th:text="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-05 16:09 CST</span>
+                       </div>
+                       <div class="eight wide column">
+                           <h1 class="ui text center aligned header" th:text="${contest.title}">线段树中等</h1>
+                       </div>
+                       <div class="four wide column text right aligned fluid container">
+                           <strong>End:</strong> <span th:text="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-05 16:09 CST</span>
+                       </div>
+                   </div>
+                   <div class="m-margin-top"></div>
+                   <div class="m-margin-tb" th:if="${percent==0}">Not started yet</div>
+                   <div class="ui progress green" data-percent="100" th:attr="data-percent=${percent}" id="contest-progress">
+                       <div class="bar">
+                           <div class="progress"></div>
+                       </div>
+                   </div>
+
+               </div>
+
+               <div class="fluid container">
+                   <div class="ui basic buttons">
+                       <button class="ui button">Update</button>
+                       <button class="ui button">Delete</button>
+                   </div>
+                   <div class="ui inverted small button red right floated" th:if="${contest.auth}==3">Private</div>
+                   <div class="ui inverted small button orange right floated" th:if="${contest.auth}==2">Protect</div>
+                   <div class="ui inverted small button green right floated" th:if="${contest.auth}==1">Public</div>
+               </div>
+
+           </div>
+           <div class="ui info message" th:if="${contest.announcement}!=null">
+
+               <div class="ui header"><i class="ui bullhorn icon"></i>公告</div>
+               <div class="ui list" th:utext="${contest.announcement}">
+
+               </div>
+
+           </div>
+
+
+       </div>
+        <div class="ui stackable secondary menu" th:replace="contest/_contestFragments::contestMenu(1)">
+            <a class="item active">Overview</a>
+            <a class="item">Problem</a>
+            <a class="item">My Submission</a>
+            <a class="item">Status</a>
+            <a class="item">Rank</a>
+            <a class="item">Comments</a>
+        </div>
+        <table th:if=" ${session.user!=null and session.user.uid==contest.uid} or ${contest.beginTime.getTime()}<= ${new java.util.Date().getTime()}" class="ui very basic selectable table center aligned">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Stat</th>
+                <th>#</th>
+                <th th:if="${session.user!=null and session.user.uid==contest.uid} or ${contest.endTime.getTime()}< ${new java.util.Date().getTime()}">Origin</th>
+                <th>Title</th>
+
+            </tr>
+            </thead>
+            <tbdoy>
+                <tr th:each="problem:${problemList}">
+<!--                 做好数据统计部分，在完成这一列   -->
+                    <td>
+                        <th:block th:if="${userSubmitStatistic!=null and userSubmitStatistic.get(problem.num)!= null}">
+                            <div class="ui label green" th:if="${userSubmitStatistic.get(problem.num).second==true}">Solved</div>
+                            <div class="ui label yellow" th:if="${userSubmitStatistic.get(problem.num).second!=true}">Attempted</div>
+                        </th:block>
+
+                    </td>
+                    <td>
+                        <th:block th:if="${contestSubmitStatistic!=null and contestSubmitStatistic.get(problem.num)!= null and contestSubmitStatistic.get(problem.num).second>0}" th:text="|${contestSubmitStatistic.get(problem.num).first}/${contestSubmitStatistic.get(problem.num).second}|"></th:block>
+                    </td>
+                    <td th:text="${problem.num}">A</td>
+                    <td th:if="${session.user!=null and session.user.uid==contest.uid} or ${contest.endTime.getTime()}< ${new java.util.Date().getTime()}"><a href="" target="_blank" th:href="${problem.problem.url}" th:text="|${problem.problem.originOJ} ${problem.problem.title}|">CodeForces 1010B</a></td>
+                    <td th:if="${#strings.isEmpty(problem.alias)}"><a href="" th:href="@{/contest/{cid}/problem/{num}(cid=${contest.cid},num=${problem.num})}" th:text="${problem.problem.title}">Different GCD Subarray Query</a></td>
+                    <td th:if="${!#strings.isEmpty(problem.alias)}"><a href="" th:href="@{/contest/{cid}/problem/{num}(cid=${contest.cid},num=${problem.num})}" th:text="${problem.alias}">Different GCD Subarray Query</a></td>
+                </tr>
+                <!--/*-->
+                <tr>
+                    <td>
+                        <div class="ui label green">Solved</div>
+                    </td>
+                    <td>1/1</td>
+                    <td>A</td>
+                    <td>CodeForces 1010B</td>
+                    <td>Different GCD Subarray Query</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="ui label green">Solved</div>
+                    </td>
+                    <td>1/1</td>
+                    <td>A</td>
+                    <td>CodeForces 1010B</td>
+                    <td>Different GCD Subarray Query</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="ui label green">Solved</div>
+                    </td>
+                    <td>1/1</td>
+                    <td>A</td>
+                    <td>CodeForces 1010B</td>
+                    <td>Different GCD Subarray Query</td>
+                </tr>
+                <!--*/-->
+            </tbdoy>
+        </table>
+
+
+        <div class="m-margin-top"></div>
+        <div class="ui" th:if="${contest.description}!=null">
+            <div class="ui header"><i class="ui info circle icon"></i>比赛信息</div>
+            <ul class="ui" >
+                <li class="item" style="list-style-type: none" th:utext="${contest.description}">
+
+                </li>
+                <!--/*-->
+                <li class="item">比赛时长：5小时</li>
+                <li class="item">ACM赛制</li>
+                <li class="item">练习赛</li>
+                <li class="item">比赛开始时间</li>
+                <li class="item">创建人：jiangxiaoju</li>
+                <!--*/-->
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="contest/_contestFragments::contestScript"></script>
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                // alert(value);
+            }
+        });
+
+    $("#contest-progress").progress({
+        className: {
+            success: 'success'
+        }
+    });
+
+</script>
+
+</body>
+</html>

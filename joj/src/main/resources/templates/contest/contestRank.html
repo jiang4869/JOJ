@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-container-large">
+    <div class="ui fluid container m-margin-large">
+
+        <div th:replace="contest/_contestFragments::contestInfo">
+            <!--比赛简介-->
+            <div class="ui stackable segment">
+                <div class="ui fluid container">
+                    <div class="ui grid">
+                        <div class="four wide column text left aligned fluid container">
+                            <strong>Begin:</strong> 2020-04-05 16:09 CST
+                        </div>
+                        <div class="eight wide column">
+                            <h1 class="ui text center aligned header">线段树中等</h1>
+                        </div>
+                        <div class="four wide column text right aligned fluid container">
+                            <strong>End:</strong> 2020-04-05 16:09 CST
+                        </div>
+                    </div>
+                    <div class="m-margin-top"></div>
+                    <div class="ui progress green" data-percent="100" id="contest-progress">
+                        <div class="bar">
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluid container">
+                    <div class="ui basic buttons">
+                        <button class="ui button">Setting</button>
+                        <button class="ui button">Clone</button>
+                        <button class="ui button">Update</button>
+                        <button class="ui button">Delete</button>
+
+                    </div>
+                    <div class="ui inverted small button red right floated">Private</div>
+                    <div class="ui inverted small button orange right floated">Protect</div>
+                    <div class="ui inverted small button green right floated">Public</div>
+                </div>
+
+            </div>
+            <div class="ui info message">
+                <ul class="list">
+                    这是一份公告
+                </ul>
+            </div>
+        </div>
+
+        <div class="ui stackable secondary menu" th:replace="contest/_contestFragments::contestMenu(5)">
+            <a class="item active">Overview</a>
+            <a class="item">Problem</a>
+            <a class="item">My Submission</a>
+            <a class="item">Status</a>
+            <a class="item">Rank</a>
+            <a class="item">Comments</a>
+        </div>
+
+
+        <!-- 每列显示（提交次数/罚时时间，如果已经AC的话）-->
+        <table class="ui very basic fluid selectable center aligned table">
+            <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Team</th>
+                <th>Solved</th>
+                <th>Penalty</th>
+                <th  th:each="problem:${problemList}"><a href="" th:href="@{/contest/{cid}/problem/{num}(cid=${contest.cid},num=${problem.num})}" th:text="${problem.num}">A</a></th>
+                <!--/*-->
+                <th>B</th>
+                <th>C</th>
+                <th>D</th>
+                <th>E</th>
+                <!--*/-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="data,stat:${ranks}">
+                <td th:text="${stat.count}">1</td>
+                <td><a href="" th:text="|${data.user.userName}(${data.user.nickName})|">我们不会修电脑(jiang4869)</a></td>
+                <td th:text="${data.solved}">5</td>
+                <td th:text="${data.penalty}">320</td>
+                <td th:each="problem:${problemList}">
+                    <div class="ui label green" th:if="${data.problemDataList.get(problem.num).ac==true}">
+                        <span th:text="${data.problemDataList.get(problem.num).faShi}"></span>
+                     <th:block th:if="${data.problemDataList.get(problem.num).faShiNum>0}">
+                         <br><span th:text="|(-${data.problemDataList.get(problem.num).faShiNum})|"></span>
+                     </th:block>
+
+                    </div>
+                    <div class="ui label red" th:if="${data.problemDataList.get(problem.num).ac==false &&data.problemDataList.get(problem.num).faShiNum>0}" th:text="${data.problemDataList.get(problem.num).faShiNum}">5</div>
+                </td>
+                <!--/*-->
+                <td>
+                    <div class="ui label green">2/179</div>
+                </td>
+                <td>
+                    <div class="ui label green">3/111</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/132</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/3</div>
+                </td>
+                <!--*/-->
+            </tr>
+            <!--/*-->
+            <tr>
+                <td>1</td>
+                <td>打铁练习生(jiang)</td>
+                <td>2</td>
+                <td>144</td>
+                <td>
+                    <div class="ui label green">1/12</div>
+                </td>
+                <td>
+
+                </td>
+                <td>
+                    <div class="ui label red">5</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/132</div>
+                </td>
+                <td>
+                    <div class="ui label red">1</div>
+                </td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>我们不会修电脑(jiang4869)</td>
+                <td>5</td>
+                <td>320</td>
+                <td>
+                    <div class="ui label green">1/12</div>
+                </td>
+                <td>
+                    <div class="ui label green">2/179</div>
+                </td>
+                <td>
+                    <div class="ui label green">3/111</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/132</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/3</div>
+                </td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>我们不会修电脑(jiang4869)</td>
+                <td>5</td>
+                <td>320</td>
+                <td>
+                    <div class="ui label green">1/12</div>
+                </td>
+                <td>
+                    <div class="ui label green">2/179</div>
+                </td>
+                <td>
+                    <div class="ui label green">3/111</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/132</div>
+                </td>
+                <td>
+                    <div class="ui label green">1/3</div>
+                </td>
+            </tr>
+            <!--*/-->
+            </tbody>
+        </table>
+
+
+    </div>
+
+</div>
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                // alert(value);
+            }
+        });
+
+    $("#contest-progress").progress({
+        className: {
+            success: 'success'
+        }
+    });
+
+</script>
+
+</body>
+</html>

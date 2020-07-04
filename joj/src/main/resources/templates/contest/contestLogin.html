@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-container-large">
+    <div class="ui fluid container m-margin-large">
+
+        <div th:replace="contest/_contestFragments::contestInfo">
+            <!--比赛简介-->
+            <div class="ui stackable segment">
+                <div class="ui fluid container">
+                    <div class="ui grid">
+                        <div class="four wide column text left aligned fluid container">
+                            <strong>Begin:</strong> <span
+                                th:text="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-05 16:09 CST</span>
+                        </div>
+                        <div class="eight wide column">
+                            <h1 class="ui text center aligned header" th:text="${contest.title}">线段树中等</h1>
+                        </div>
+                        <div class="four wide column text right aligned fluid container">
+                            <strong>End:</strong> <span
+                                th:text="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-05 16:09 CST</span>
+                        </div>
+                    </div>
+                    <div class="m-margin-top"></div>
+                    <div class="m-margin-tb" th:if="${percent==0}">Not started yet</div>
+                    <div class="ui progress green" data-percent="100" th:attr="data-percent=${percent}"
+                         id="contest-progress">
+                        <div class="bar">
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="fluid container">
+                    <div class="ui basic buttons">
+                        <button class="ui button">Update</button>
+                        <button class="ui button">Delete</button>
+                    </div>
+                    <div class="ui inverted small button red right floated" th:if="${contest.auth}==3">Private</div>
+                    <div class="ui inverted small button orange right floated" th:if="${contest.auth}==2">Protect</div>
+                    <div class="ui inverted small button green right floated" th:if="${contest.auth}==1">Public</div>
+                </div>
+
+            </div>
+            <div class="ui info message" th:if="${contest.announcement}!=null">
+
+                <div class="ui header"><i class="ui bullhorn icon"></i>公告</div>
+                <div class="ui list" th:utext="${contest.announcement}">
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="m-margin-tb-large"></div>
+        <div class="ui m-container-small">
+            <div class="ui segment">
+                <form action="" method="post" class="ui small form">
+                    <div class="field">
+                        <label>Password:</label>
+                        <input type="text" name="password"/>
+                    </div>
+                    <div class="ui divider"></div>
+                    <button type="button" id="login" class="ui primary button">Login</button>
+                    <div class="ui error message"></div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="contest/_contestFragments::contestScript"></script>
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                // alert(value);
+            }
+        });
+
+    $("#contest-progress").progress({
+        className: {
+            success: 'success'
+        }
+    });
+
+
+    $('.ui.form').form({
+        fields:{
+            password:{
+                identifier:'password',
+                rules:[
+                    {
+                        type:'empty',
+                        prompt:'Please enter the password'
+                    }
+                ]
+            }
+        }
+    })
+
+    $('#login').click(function () {
+        if([[${session.user==null}]]){
+            alert('Please login first');
+            return false;
+        }
+        var flag=$('.ui.form').form('validate form');
+        if(flag){
+            $.post('[[@{/contest/{cid}/login(cid=${contest.cid})}]]',{
+                'password':$('[name=password]').val()
+            },function (data) {
+                if(data.flag==true){
+                    window.location='[[@{/contest/{cid}(cid=${contest.cid})}]]'
+                }else{
+                    alert(data.msg)
+                }
+
+
+            })
+        }
+        return true;
+
+    })
+
+
+</script>
+
+</body>
+</html>

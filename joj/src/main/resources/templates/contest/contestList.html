@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-margin-large">
+    <div class="ui fluid container">
+        <div class="ui stackable grid">
+            <!--左边的top-->
+            <div class="four wide column">
+                <div class="ui vertical fluid menu">
+                    <a class="item" th:classappend="${contestVo.type==-1}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${-1},isSelf=${contestVo.isSelf}) }">All</a>
+                    <a class="item" th:classappend="${contestVo.type==0}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${0},isSelf=${contestVo.isSelf}) }">Scheduled</a>
+                    <a class="item" th:classappend="${contestVo.type==1}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${1},isSelf=${contestVo.isSelf}) }">Running</a>
+                    <a class="item" th:classappend="${contestVo.type==2}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${2},isSelf=${contestVo.isSelf}) }">End</a>
+                </div>
+                <div class="ui vertical fluid menu" th:if="${session.user}!=null">
+                    <a class="item" th:classappend="${contestVo.isSelf==false}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${contestVo.type},isSelf=${false}) }">All Contests</a>
+                    <a class="item" th:classappend="${contestVo.isSelf==true}?'active'" th:href="@{/contest/list/{page}(page=${1},title=${contestVo.title},type=${contestVo.type},isSelf=${true}) }">My Contests</a>
+                </div>
+            </div>
+
+            <!--        比赛列表-->
+            <div class="twelve wide column">
+                <div class="ui attached  segment">
+                    <!--            搜索栏-->
+                    <div class="ui stackable">
+                        <form action="" th:action="@{/contest/}" method="get" class="m-inline-block">
+                            <div class="ui action input">
+                                <input type="hidden" name="type" th:value="${contestVo.type}">
+                                <input type="hidden" name="isSelf" th:value="${contestVo.isSelf}">
+                                <input type="text" name="title" placeholder="Title..." th:value="${contestVo.title}">
+                                <button type="submit" class="ui icon button basic">
+                                    <i class="search icon"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <a th:href="@{/contest/add}" target="_blank" class="ui basic button">Create Contest</a>
+                    </div>
+
+                    <!--分割线-->
+                    <div class="ui divider"></div>
+
+                    <!--中间内容-->
+                    <table class="ui tiny fluid selectable striped table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Begin Time</th>
+                            <th>End Time</th>
+                            <th>Openness</th>
+                            <th>Owner</th>
+                        </tr>
+                        </thead>
+                        <tbdoy>
+                            <tr th:each="contest:${contestList}">
+                                <td th:text="${contest.cid}">1000</td>
+                                <td><a href="" th:href="@{/contest/{cid}(cid=${contest.cid})}" th:text="${contest.title}">哈尔滨旅游赛</a></td>
+                                <td th:text="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}">2019-09-12 18:00:00</td>
+                                <td th:text="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}">5 hours</td>
+                                <td>
+                                    <div class="ui inverted small button red" th:if="${contest.auth}==3">Private</div>
+                                    <div class="ui inverted small button orange" th:if="${contest.auth}==2">Protect</div>
+                                    <div class="ui inverted small button green" th:if="${contest.auth}==1">Public</div>
+                                </td>
+                                <td th:text="${contest.user.userName}">jiangxiaoju</td>
+                            </tr>
+                            <!--/*-->
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <tr>
+                                <td>1000</td>
+                                <td>哈尔滨旅游赛</td>
+                                <td>2019-09-12 18:00:00</td>
+                                <td>5 hours</td>
+                                <td>jiangxiaoju</td>
+                            </tr>
+                            <!--*/-->
+                        </tbdoy>
+                    </table>
+
+
+                    <!--分页菜单-->
+                    <div class="ui pagination menu m-margin-top" th:if="${page}!=null">
+                        <a class="item"
+                           th:href="@{/contest/list/{page}(page=${page.current - 1 >1?page.current -1: 1},title=${contestVo.title},type=${contestVo.type},isSelf=${contestVo.isSelf}) }">
+                            <i class="angle left icon"></i></a>
+                        <a class="item" th:each="i:${#numbers.sequence(page.begin,page.end)}"
+                           th:href="@{/contest/list/{page}(page=${i},title=${contestVo.title},type=${contestVo.type},isSelf=${contestVo.isSelf}) }"
+                           th:attr="data-pagenum=${i}" th:text="${i}"
+                           th:classappend="${i==page.current?'active':''}">1</a>
+                        <!--/*-->
+                        <a class="item">10</a>
+                        <a class="item">11</a>
+                        <a class="item">12</a>
+                        <!--*/-->
+                        <a class="item"
+                           th:href="@{/contest/list/{page}(page=${page.current + 1 > page.pages?page.pages: page.current + 1},title=${contestVo.title},type=${contestVo.type},isSelf=${contestVo.isSelf}) }"
+                        ><i class="angle right icon"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                // alert(value);
+            }
+        });
+
+
+</script>
+
+</body>
+</html>

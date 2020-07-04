@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title th:text="${session.user.userName}">console</title>
+    <link rel="stylesheet" href="../static/plugin/semanticui/semantic.min.css" th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../static/plugin/semanticui/semantic.min.js" th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(-1)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui m-margin-top-large m-margin">
+    <div class="ui m-container-large">
+
+        <div class="ui pointing menu" th:replace="console/_fragments::consolemenu(3)">
+            <a class="item active">主页</a>
+            <a class="item">博客管理</a>
+            <a class="item">个人信息</a>
+
+        </div>
+        <div class="ui  segment">
+            <h4 class="ui dividing header">profile</h4>
+            <div class="image">
+                <img onclick="changeAvatar()" id="avatar" src="../../static/img/35.jpg"
+                     th:src="@{${session.user.avatar}}"
+                     class="ui small circular image tooltip hover" data-content="Click to change avatar">
+            </div>
+            <div class="m-margin-tb-large"></div>
+            <form class="ui form">
+                <input type="hidden" name="uid" th:value="${session.user.uid}">
+                <div class="field">
+                    <div class="two fields">
+                        <div class="field">
+                            <h4 class="ui header">nickName</h4>
+                            <input type="text" name="nickName" placeholder="please enter your nickName..."
+                                   th:value="${session.user.nickName}">
+                        </div>
+                        <div class="field">
+                            <h4 class="ui header"><span style="color: red">*</span>old password</h4>
+                            <input type="password" name="originPassword" placeholder="old password...">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="two fields">
+                        <div class="field">
+                            <h4 class="ui header">password</h4>
+                            <input type="password" name="password" data-content="Must be 8-16 characters in length" class="tooltip"
+                                   placeholder="change Password...">
+                        </div>
+                        <div class="field">
+                            <h4 class="ui header">confirm password</h4>
+                            <input type="password" name="repeatPassword" placeholder="confirm password...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="two fields">
+                        <div class="field">
+                            <h4 class="ui header">QQ</h4>
+                            <input type="text" name="qq" placeholder="please enter your QQ..." th:value="${session.user.qq}">
+                        </div>
+                        <div class="field">
+                            <h4 class="ui header">email</h4>
+                            <input type="text" name="email" placeholder="please enter your email..." th:value="${session.user.email}">
+                        </div>
+                    </div>
+                </div>
+                <div class="m-margin-tb-large"></div>
+                <div id="update-btn" class="ui button" tabindex="0">确定</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<input type="file" class="files" accept="multipart/form-data" onchange="selectImg(this)" style="opacity: 0"/>
+
+<!--模态框部分  选择头像文件-->
+
+<div class="ui modal">
+    <div class="header">choose image</div>
+    <div class="image content">
+        <div class="tailoring-content-two">
+            <div class="tailoring-box-parcel" style="height: 450px;width: 450px">
+                <img id="tailoringImg" src="" style="max-width: 100%;max-height: 100%">
+            </div>
+        </div>
+
+        <div class="description" style="width: 400px">
+            <p class="ui header text center aligned">preview</p>
+            <div class="ui circular centered small image  m-margin-l-large square preview-img"
+                 style="width: 400px;height: 450px;overflow: hidden;padding-left: 5em"></div>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="ui button change_btn right">Select a image</button>
+        <button class="ui negative button">cancel</button>
+        <button class="ui positive button">confirm</button>
+    </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br>
+
+
+<footer th:replace="_fragments::footer"></footer>
+<link rel="stylesheet" href="../../static/plugin/cropper/css/cropper.css" th:href="@{/plugin/cropper/css/cropper.css}">
+
+
+<script src="../../static/plugin/cropper/js/cropper.js" th:src="@{/plugin/cropper/js/cropper.js}"></script>
+<script src="../../static/plugin/cropper/js/jquery-cropper.js"
+        th:src="@{/plugin/cropper/js/jquery-cropper.js}"></script>
+<!--<script th:replace="_fragments::script"></script>-->
+
+<!--之前出bug，直接引入模块会出问题，这次记得重新试看看  2020-5-21-->
+<!--已经解决，改了fragment的命名，可能是名字起冲突了-->
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+
+    function logout() {
+        console.log('logout');
+        $.post('[[@{/user/logout}]]', '', function (data) {
+            window.location.reload();
+        })
+    }
+
+
+    // var time = [[${date}]];
+    //
+    // function time_f() {
+    //     time += 1000;
+    //     $('#time').text(new Date(time));
+    // }
+    //
+    // time_f();
+    // setInterval("time_f()", 1000);
+</script>
+<script>
+
+    // 自定义校验密码规则
+    $.fn.form.settings.rules.checkOriginPassword = function (value) {
+        // var originpassword = $('[name="originpassword"]').val();
+        var originPassword=value;
+        console.log(originPassword);
+        var flag = false;
+        $.post({
+            url: '[[@{/user/checkOriginPassword}]]',
+            async: false,
+            data: {
+                'userName': '[[${session.user.userName}]]',
+                'originPassword': originPassword,
+            },
+            success: function (data) {
+                flag = data.flag;
+            }
+        });
+        return flag;
+    };
+
+    $.fn.form.settings.rules.checkEmail = function (value) {
+        if (!$.fn.form.settings.rules.empty(value)) {
+            return true;
+        } else {
+            return $.fn.form.settings.rules.email(value);
+        }
+
+    };
+
+    $.fn.form.settings.rules.checkPassword = function (value) {
+        if (!$.fn.form.settings.rules.empty(value)) {
+            return true;
+        } else {
+
+            return $.fn.form.settings.rules.regExp(value, /^\w{8,16}$/);
+        }
+
+    };
+
+    // 表单校验模块
+    $('.ui.form').form({
+        inline: true,
+        fields: {
+            originPassword: {
+                identifier: 'originPassword',
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: '原密码不能为空'
+                    },
+                    {
+                        type: 'checkOriginPassword',
+                        prompt: '密码错误'
+                    }
+                ]
+            },
+            email: {
+                identifier: 'email',
+                rules: [
+                    {
+                        type: 'checkEmail',
+                        prompt: '邮箱格式错误'
+                    }
+                ]
+            },
+            password: {
+                identifier: 'password',
+                rules: [
+                    {
+                        type: 'checkPassword',
+                        prompt: '密码不合法，请重新输入'
+                    }
+                ]
+            },
+            repeatPassword: {
+                identifier: 'repeatPassword',
+                rules: [
+                    {
+                        type: 'match[password]',
+                        prompt: '密码不一致'
+                    }
+                ]
+            },
+            qq: {
+                identifier: 'qq',
+                rules: [
+                    {
+                        type: 'regExp',
+                        value: /^\w{0,11}$/i,
+                        prompt: 'qq号码过长'
+                    }
+                ]
+            }
+
+        }
+    });
+
+    // 更新个人资料
+    $("#update-btn").click(function () {
+        var flag = $('.ui.form').form('validate form');
+        console.log(flag);
+        if (flag) {
+            $.ajax({
+                type: "put",
+                url: '[[@{/user/}]]'+$('[name="uid"]').val(),
+                contentType:"application/json",//设置请求参数类型为json字符
+                data:JSON.stringify({
+                    'uid':$('[name="uid"]').val(),
+                    'nickName': $('[name="nickName"]').val(),
+                    'email': $('[name="email"]').val(),
+                    'password': $('[name="password"]').val(),
+                    'qq': $('[name="qq"]').val()
+                } ),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.flag == true) {
+                        alert('update successfully');
+                        location.reload();
+                    } else {
+                        alert(data.msg);
+                    }
+                },
+                error: function () {
+                    alert("Saved failed！");
+                }
+            });
+
+        }
+    });
+
+
+    // 文件上传按钮
+    $(".change_btn").click(function () {
+        $(".files").click();
+    });
+
+    // 监听文件上传事件
+    function selectImg(file) {
+        //文件为空，返回
+        console.log(file);
+        if (!file.files || !file.files[0]) {
+            console.log('file empty');
+            return;
+        }
+        $(".tailoring-container").toggle();
+        console.log('file read');
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            var replaceSrc = evt.target.result;
+            // 更换cropper的图片
+            $('#tailoringImg').cropper('replace', replaceSrc, false);// 默认false，适应高度，不失真
+            console.log('file cropper');
+        };
+        reader.readAsDataURL(file.files[0]);
+    }
+
+
+    // 关闭裁剪框
+    function closeTailor() {
+        $(".tailoring-container").toggle();
+    }
+
+    // 将更新后的头像上传成功后，对数据进行更新
+    // 参数未更新后头像的url地址
+    function updateAvatar(url) {
+        // $.post('[[@{/user/update/avatar}]]', {
+        //     "url": url[0],
+        //     "uid": [[${session.user.uid}]]
+        // }, function (data) {
+        //     if (data.flag == true) {
+        //         window.location.reload();
+        //     } else {
+        //         alert(data.msg);
+        //     }
+        // })
+        $.ajax({
+            type: "put",
+            url: '[[@{/user/}]]'+$('[name="uid"]').val(),
+            contentType:"application/json",//设置请求参数类型为json字符
+            data:JSON.stringify({
+                'uid':$('[name="uid"]').val(),
+                "avatar": url[0]
+            } ),
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                if (data.flag == true) {
+                    alert('update successfully');
+                    location.reload();
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function () {
+                alert("update failed！");
+            }
+        });
+
+    }
+
+    // 将剪裁好的头像图片上传到服务器，
+    // 参数未 canvas
+    function upload(e) {
+        var dataURL = e.toDataURL();
+        var arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        console.log('mine ' + mime);
+        var avatar = new Blob([u8arr], {type: mime});
+        var fd = new FormData();
+        let files = new window.File([avatar], $('.files')[0].files[0]['name']);
+
+        fd.append("upload", files);
+
+        $.ajax({
+            type: "post",
+            url: "[[@{/api/fileupload/}]]",
+            async: true,
+            data: fd,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.flag == true) {
+                    // 上传成功后更新个人信息
+                    updateAvatar(data.url);
+                }
+            }
+        });
+    }
+
+    // 点击头像 打开模态框
+
+    function changeAvatar() {
+        // $('#tailoringImg').cropper('clear');
+        // cropper图片裁剪
+        $('#tailoringImg').cropper({
+            aspectRatio: 1 / 1,// 默认比例
+            preview: '.preview-img',// 预览视图
+            viewMode: 1,
+            guides: false, // 裁剪框的虚线(九宫格)
+            autoCropArea: 0.5, // 0-1之间的数值，定义自动剪裁区域的大小，默认0.8
+            movable: false, // 是否允许移动图片
+            dragCrop: true, // 是否允许移除当前的剪裁框，并通过拖动来新建一个剪裁框区域
+            movable: true, // 是否允许移动剪裁框
+            resizable: true, // 是否允许改变裁剪框的大小
+            zoomable: true, // 是否允许缩放图片大小
+            mouseWheelZoom: false, // 是否允许通过鼠标滚轮来缩放图片
+            touchDragZoom: true, // 是否允许通过触摸移动来缩放图片
+            rotatable: true, // 是否允许旋转图片
+            crop: function (e) {
+                console.log(e);
+            }
+        });
+
+        // 显示模态框
+        $('.ui.modal').modal({
+            onApprove: function () {
+                console.log("确定");
+                if ($("#tailoringImg").attr("src") == null) {
+                    return false;
+                } else {
+                    var cas = $('#tailoringImg').cropper('getCroppedCanvas');// 获取被裁剪后的canvas
+                    upload(cas);
+                    closeTailor();// 关闭裁剪框
+                }
+            }
+        }).modal('show')
+        ;
+    }
+
+    $('.tooltip').popup({
+        // popup: $('.wechat-qr'),
+        position: 'right center',
+        on: 'hover'
+    });
+
+
+</script>
+</body>
+</html>

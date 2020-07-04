@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>View Code</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/plugin/prism/prism.css" th:href="@{/plugin/prism/prism.css}">
+    <script src="../../static/plugin/prism/prism.js" th:src="@{/plugin/prism/prism.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <style>
+        .submitInfo > div {
+            margin: 20px;
+        }
+
+        .submitInfo > div > div {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="ui inverted left fixed vertical menu container overflow m-admin-menu" th:replace="admin/_fragments::consolemenu(6)">
+    <div class="m-margin-tb-large">
+        <img src="../../static/img/35.jpg" alt="" class="ui tiny centered circular image">
+                <p class="ui header text center aligned m-margin-top-large" style="color: white">管理员:   <span>jiang</span></p>
+    </div>
+
+    <a class="active" style="font-size: 1.2em">
+        <p class="header">Dashboard</p>
+    </a>
+
+    <div class="item " style="font-size: 1.2em">
+       <p class="header">User</p>
+        <div class="menu">
+            <a href="#" class="item">userList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Blog</p>
+        <div class="menu">
+            <a href="#" class="item">BlogList</a>
+            <a href="#" class="item">BlogCommentList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Problem</p>
+        <div class="menu">
+            <a href="#" class="item">ProblemList</a>
+            <a href="#" class="active item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Contest</p>
+        <div class="menu">
+            <a href="#" class="item">ContestList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Message</p>
+        <div class="menu">
+            <a href="#" class="item">MessageList</a>
+        </div>
+    </div>
+    <div class="ui item " style="border-color: black">
+        <div class="ui inverted very basic button ">注销</div>
+    </div>
+</div>
+
+
+<div class="article">
+    <div class="ui segment right aligned">
+        <img src="../../static/img/35.jpg"  th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+    </div>
+    <div class="ui m-margin-top-large"></div>
+    <div class="m-padded-lr">
+        <div class="ui  container">
+
+            <div th:if="${submission!=null}" class="ui attached segment m-shadow-small">
+                <a style="display: block" th:href="@{/problem/{pid}(pid=${submission.pid})}" class="ui header center aligned"
+                   th:if="${submission.contestId}==null"
+                   th:text="|${submission.problem.originOJ} - ${submission.problem.title}|">HDU - Hello world</a>
+                <div th:if="${submission.contestId}!=null" class="ui centered">
+
+                    <th:block th:if="${submission.contestProblem!=null}">
+                        <a style="display: block"
+                           th:href="@{/contest/{cid}/problem/{num}(cid=${submission.contestId},num=${submission.contestProblem.num})}"
+                           class="ui header text center aligned" th:if="${!#strings.isEmpty(submission.contestProblem.alias)}"
+                           th:text="|${submission.contest.title} (${submission.contestProblem.num}) - ${submission.contestProblem.alias}|">HDU
+                            - Hello world</a>
+                        <a style="display: block"
+                           th:href="@{/contest/{cid}/problem/{num}(cid=${submission.contestId},num=${submission.contestProblem.num})}"
+                           class="ui header text center aligned" th:if="${#strings.isEmpty(submission.contestProblem.alias)}"
+                           th:text="|${submission.contest.title} (${submission.contestProblem.num}) - ${submission.problem.title}|">HDU
+                            - Hello world</a>
+                    </th:block>
+                    <th:block th:if="${submission.contestProblem==null}">
+
+                        <div style="display: block"
+                             class="ui header text center aligned"
+                             th:text="|${submission.contest.title} (Question does not exist) |">HDU
+                            - Hello world</div>
+                    </th:block>
+                </div>
+
+                <div class="submitInfo">
+                    <div class="m-inline-block">
+                        <div class="m-inline-block">
+                            Submit Time:
+                        </div>
+                        <div class="m-inline-block" th:text="${#dates.format(submission.subTime,'yyyy-MM-dd HH:mm:ss')}">
+                            2020-06-26 15:28:04
+                        </div>
+                    </div>
+                    <div class="m-inline-block">
+                        <div class="m-inline-block">
+                            Language:
+                        </div>
+                        <div class="m-inline-block" th:text="${submission.trueLanguage}">
+                            G++
+                        </div>
+                    </div>
+                    <div class="m-inline-block">
+                        <div class="m-inline-block">
+                            Length:
+                        </div>
+                        <div class="m-inline-block" th:text="${submission.length}">
+                            848
+                        </div>
+                    </div>
+                    <div class="m-inline-block">
+                        <div class="m-inline-block">
+                            Time:
+                        </div>
+                        <div class="m-inline-block" th:text="|${submission.time} ms|">
+                            4 ms
+                        </div>
+                    </div>
+                    <div class="m-inline-block">
+                        <div class="m-inline-block">
+                            Memory:
+                        </div>
+                        <div class="m-inline-block" th:text="|${submission.memory} K|">
+                            492 K
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${submission.additionalInfo}!=null" class="ui warning message m-margin-bottom-large" style="margin-top: 0" th:utext="${submission.additionalInfo}">
+
+                </div>
+                <div>
+                <pre class="line-numbers" th:classappend="${prismJS}"><code th:text="${submission.sourceCode}">
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main() {
+    ios::sync_with_stdio(false);
+    int t;
+    cin >> t;
+    while (t--) {
+        long long n;
+        cin >> n;
+        long long ans = 0;
+        while (n >= 10) {
+            long long cnt = n / 10;
+            ans = ans + cnt * 10  ;
+            n = n - cnt * 10+cnt;
+        }
+        ans += n;
+        cout << ans << endl;
+    }
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+
+            <div th:if="${submission==null}" class="ui warning message">
+                <div class="ui header center aligned">you have no privilege to view the code.</div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+</script>
+
+<script th:replace="admin/_fragments::script">
+    $('.ui.accordion').accordion();
+
+</script>
+</body>
+</html>

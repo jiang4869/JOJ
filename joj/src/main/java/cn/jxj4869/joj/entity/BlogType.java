@@ -1,0 +1,35 @@
+package cn.jxj4869.joj.entity;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author jxj4869
+ * @since 2020-06-11
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("joj_blog_type")
+public class BlogType implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "btid", type = IdType.AUTO)
+    private Integer btid;
+
+    @TableField("typeName")
+    private String typeName;
+
+
+}

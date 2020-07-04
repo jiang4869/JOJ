@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>BlogList</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css" th:href="@{/plugin/semanticui/semantic.min.css}">
+
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+
+    <script src="../../static/plugin/semanticui/semantic.min.js" th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/typo.css" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" href="../../static/plugin/prism/prism.css" th:href="@{/plugin/prism/prism.css}">
+    <link rel="stylesheet" href="../../static/css/animate.css" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" href="../../static/plugin/tocbot/tocbot.css" th:href="@{/plugin/tocbot/tocbot.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/plugin/simditor/styles/simditor.css" th:href="@{/plugin/simditor/styles/simditor.css}"/>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+
+<div class="ui inverted left fixed vertical menu container overflow m-admin-menu" th:replace="admin/_fragments::consolemenu(3)">
+    <div class="m-margin-tb-large">
+        <img src="../../static/img/35.jpg" alt="" class="ui tiny centered circular image">
+                <p class="ui header text center aligned m-margin-top-large" style="color: white">管理员:   <span>jiang</span></p>
+    </div>
+
+    <a class="item" style="font-size: 1.2em">
+        <p class="header">Dashboard</p>
+    </a>
+
+    <div class="item " style="font-size: 1.2em">
+       <p class="header">User</p>
+        <div class="menu">
+            <a href="#" class="item">userList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Blog</p>
+        <div class="menu">
+            <a href="#" class="active item">BlogList</a>
+            <a href="#" class="item">BlogCommentList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Problem</p>
+        <div class="menu">
+            <a href="#" class="item">ProblemList</a>
+            <a href="#" class="item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Contest</p>
+        <div class="menu">
+            <a href="#" class="item">ContestList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Message</p>
+        <div class="menu">
+            <a href="#" class="item">MessageList</a>
+        </div>
+    </div>
+    <div class="ui item " style="border-color: black">
+        <div class="ui inverted very basic button ">注销</div>
+    </div>
+</div>
+
+
+<div class="article">
+    <div class="ui segment right aligned">
+        <img src="../../static/img/35.jpg" th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+    </div>
+    <div class="ui m-margin-top-large"></div>
+    <div class="m-padded-lr" >
+
+        <div id="waypoint" class="ui m-margin-top-large m-margin scrollTop">
+            <div class="ui m-container-large animated fadeIn">
+                <!--头部信息-->
+                <div class="ui attached segment">
+                    <img src="static/img/1.jpg" alt="" class="ui avatar image" th:src="@{${blog.user.avatar}}">
+                    <a href="#" target="_blank" th:href="@{/console/{userName}(userName=${blog.user.userName})}" class="ui teal m-margin-r-small" th:text="${blog.user.nickName}">江小举</a>
+                    <div class="m-inline-block m-margin-r-small"><i class="calendar alternate icon"></i><span
+                            th:text="${#dates.format(blog.createTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-29</span></div>
+                    <div class="ui m-inline-block"><i class="eye icon"></i><span th:text="${blog.views}">2019</span></div>
+                </div>
+
+                <!--    原文内容部分-->
+                <div class="ui  attached  segment m-shadow-small">
+
+
+                    <!--    标题部分-->
+                    <div class="ui fluid container m-padded-t-large">
+                        <h1 id="blogTitleValue" class="ui header  center aligned" th:text="${blog.title}">关于刻意练习的清单</h1>
+                    </div>
+                    <!--中间主要内容部分-->
+                    <div id="content"
+                         class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+                        <div id="editormd-view">
+                            <textarea style="display:none;" id="append-test" th:text="${blog.content}" name="test-editormd-markdown-doc">###Hello world!</textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+<script src="../../static/plugin/prism/prism.js" th:src="@{/plugin/prism/prism.js}"></script>
+<script th:src="@{/plugin/editormd/lib/marked.min.js}" src="../../static/plugin/editormd/lib/marked.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/prettify.min.js}" src="../../static/plugin/editormd/lib/prettify.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/raphael.min.js}" src="../../static/plugin/editormd/lib/raphael.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/underscore.min.js}" src="../../static/plugin/editormd/lib/underscore.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/sequence-diagram.min.js}" src="../../static/plugin/editormd/lib/sequence-diagram.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/flowchart.min.js}" src="../../static/plugin/editormd/lib/flowchart.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/jquery.flowchart.min.js}" src="../../static/plugin/editormd/lib/jquery.flowchart.min.js"></script>
+<script th:src="@{/plugin/editormd/editormd.js}" src="../../static/plugin/editormd/editormd.js"></script>
+
+<script>
+    $(function() {
+        var testEditormdView;
+
+        testEditormdView = editormd.markdownToHTML("editormd-view", {
+            // markdown        : $("#append-test").text() ,//+ "\r\n" + ,//markdown
+            htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
+            // htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            toc             : true,
+            // tocm            : true,    // Using [TOCM]
+            tocContainer    : ".js-toc", // 自定义 ToC 容器层
+
+            //gfm             : false,
+            tocDropdown     : true,
+            // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+            previewCodeHighlight:false,
+            emoji           : true,
+            taskList        : true,
+            tex             : true,  // 默认不解析
+            flowChart       : true,  // 默认不解析
+            sequenceDiagram : true,  // 默认不解析
+        });
+
+
+        $('#editormd-view a').attr('target','_blank');
+        $('table').addClass('ui table');
+        $('pre').addClass("line-numbers");
+        Prism.highlightAll();
+
+    });
+</script>
+
+<script th:replace="admin/_fragments::script">
+    $('.ui.accordion').accordion();
+
+</script>
+</body>
+</html>

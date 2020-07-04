@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Status</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(4)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-margin-large">
+    <div class="ui fluid container">
+
+        <div class="ui attached  segment">
+            <!--            搜索栏-->
+            <div class="ui stackable">
+                <form action="" method="get" th:action="@{/status/}" class="m-inline-block">
+                    <div class="ui action input">
+                        <input type="hidden" name="OJ" th:value="${statusVo.OJ}">
+                        <input type="hidden" name="probId" th:value="${statusVo.probId}">
+                        <input type="text" name="userName" placeholder="UserName..." th:value="${statusVo.userName}">
+                        <button type="submit" class="ui icon button basic">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <form action="" method="get" th:action="@{/status/}" class="m-inline-block m-margin-l-large">
+                    <div class="ui action input">
+                        <input type="hidden" name="userName" th:value="${statusVo.userName}">
+                        <input type="hidden" name="OJ" th:value="${statusVo.OJ}">
+                        <input type="text" name="probId" placeholder="probId..." th:value="${statusVo.probId}">
+                        <button type="submit" class="ui icon button basic">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <select class="ui oj search dropdown m-margin-l-large">
+                    <option value="">选择OJ</option>
+                    <option value="all">All</option>
+                    <option value="HDU" th:each="oj:${ojList}" th:value="${oj}" th:text="${oj}">HDU</option>
+                    <!--/*-->
+                    <option value="CodeForces">CodeForces</option>
+                    <option value="POJ">POJ</option>
+                    <!--*/-->
+                </select>
+            </div>
+
+            <!--分割线-->
+            <div class="ui divider"></div>
+
+            <!--中间内容-->
+            <table class="ui tiny fluid selectable striped table">
+                <thead>
+                <tr>
+                    <th>Run ID</th>
+                    <th>UserName</th>
+                    <th>OJ</th>
+                    <th>Prob</th>
+                    <th>Result</th>
+                    <th>Time(ms)</th>
+                    <th>Memory(k)</th>
+                    <th>Length</th>
+                    <!--                    <th>Language</th>-->
+                    <th>Submit Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="submission:${submissionsList}">
+                    <td th:text="${submission.sid}">20200522</td>
+                    <td><a href="" th:text="${submission.user.userName}" th:href="@{/console/{userName}(userName=${submission.user.userName})}">jiangxiaoju</a></td>
+                    <td th:text="${submission.problem.originOJ}">CodeForces</td>
+                    <td>
+                        <a href="" target="_blank"  th:href="@{/problem/{pid}(pid=${submission.pid})}" th:text="${submission.problem.originProb}">1208B</a>
+                        <a th:if="${submission.contestId!=null and submission.contestProblem!=null}" href="" target="_blank"  th:href="@{/contest/{cid}/problem/{num}(cid=${submission.contestId},num=${submission.contestProblem.num})}" th:text="|(${submission.contestProblem.num})|">1208B</a>
+                    </td>
+                    <td>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==1}" class="ui button green" th:text="${submission.status}">Accepted</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==2}" class="ui button pink" th:text="${submission.status}">Presentation Error</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==3}" class="ui button red" th:text="${submission.status}">Wrong Answer</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==4}" class="ui button orange" th:text="${submission.status}">Time Limit Exceeded</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==5}" class="ui button blue" th:text="${submission.status}">Memory Limit Exceeded</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==6}" class="ui button teal" th:text="${submission.status}">Output Limit Exceeded</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==7}" class="ui button purple" th:text="${submission.status}">Runtime Error</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==8}" class="ui button yellow" th:text="${submission.status}">Compile Error</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==9}" class="ui button black" th:text="${submission.status}">Unknown Error</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==10}" class="ui button grey" th:text="${submission.status}">Running & Judging</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==11}" class="ui button" th:text="${submission.status}">Pending</a>
+                        <a target="_blank" th:href="@{/submission/{sid}(sid=${submission.sid})}" th:if="${submission.statusType==11} or ${submission.statusType==10}" class="ui active inline loader"></a>
+                    </td>
+                    <td th:text="${submission.time}">514</td>
+                    <td th:text="${submission.memory}">0.3</td>
+                    <!--                    <td>542</td>-->
+                    <td th:text="${submission.trueLanguage}">C++</td>
+                    <td th:text="${#dates.format(submission.subTime,'yyyy-MM-dd hh:mm:ss')}">2019-11-10 14:37:52</td>
+                </tr>
+                <!--/*-->
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <button class="ui button green">Accepted</button>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button orange">Time Limit Exceeded</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button yellow">Compile Error</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button blue">Memory Limit Exceeded</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button black">System Error</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button grey">Pending & Judging</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <tr>
+                    <td>20200522</td>
+                    <td>jiangxiaoju</td>
+                    <td>CodeForces</td>
+                    <td>1208B</td>
+                    <td>
+                        <div class="ui button purple">Runtime Error</div>
+                    </td>
+                    <td>514</td>
+                    <td>0.3</td>
+                    <td>542</td>
+                    <td>C++</td>
+                    <td>2019-11-10 14:37:52</td>
+                </tr>
+                <!--*/-->
+                </tbody>
+            </table>
+            <!--                分页菜单-->
+            <div class="ui pagination menu m-margin-top" th:if="${page}!=null">
+                <a class="item"
+                   th:href="@{/status/list/{page}(page=${page.current - 1 >1?page.current -1: 1},OJ=${statusVo.OJ},probId=${statusVo.probId},userName=${statusVo.userName}) }">
+                    <i class="angle left icon"></i></a>
+                <a class="item" th:each="i:${#numbers.sequence(page.begin,page.end)}"
+                   th:href="@{/status/list/{page}(page=${i},OJ=${statusVo.OJ},probId=${statusVo.probId},userName=${statusVo.userName}) }"
+                   th:attr="data-pagenum=${i}" th:text="${i}"
+                   th:classappend="${i==page.current?'active':''}">1</a>
+                <!--/*-->
+                <a class="item">10</a>
+                <a class="item">11</a>
+                <a class="item">12</a>
+                <!--*/-->
+                <a class="item"
+                   th:href="@{/status/list/{page}(page=${page.current + 1 > page.pages?page.pages: page.current + 1},OJ=${statusVo.OJ},probId=${statusVo.probId},userName=${statusVo.userName}) }"
+                ><i class="angle right icon"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                $('[name=OJ]').val(value);
+                var userName=$('[name=userName]').val();
+                var probId=$('[name=probId]').val();
+                console.log(value);
+                window.location='[[@{/status/list/1?}]]'+'OJ='+value+'&probId='+probId+'&userName='+userName;
+            }
+        });
+
+$('[name=userName]').change(function () {
+    $('[name=userName]').val($(this).val());
+
+})
+    $('[name=probId]').change(function () {
+        $('[name=probId]').val($(this).val());
+
+    })
+</script>
+
+</body>
+</html>

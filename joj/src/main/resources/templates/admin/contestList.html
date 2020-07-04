@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>ContestList</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+
+<div class="ui inverted left fixed vertical menu container overflow m-admin-menu" th:replace="admin/_fragments::consolemenu(7)">
+    <div class="m-margin-tb-large">
+        <img src="../../static/img/35.jpg" alt="" class="ui tiny centered circular image">
+                <p class="ui header text center aligned m-margin-top-large" style="color: white">管理员:   <span>jiang</span></p>
+    </div>
+
+    <a class="active" style="font-size: 1.2em">
+        <p class="header">Dashboard</p>
+    </a>
+
+    <div class="item " style="font-size: 1.2em">
+       <p class="header">User</p>
+        <div class="menu">
+            <a href="#" class="item">userList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Blog</p>
+        <div class="menu">
+            <a href="#" class="item">BlogList</a>
+            <a href="#" class="item">BlogCommentList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Problem</p>
+        <div class="menu">
+            <a href="#" class="item">ProblemList</a>
+            <a href="#" class="item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Contest</p>
+        <div class="menu">
+            <a href="#" class="active item">ContestList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Message</p>
+        <div class="menu">
+            <a href="#" class="item">MessageList</a>
+        </div>
+    </div>
+    <div class="ui item " style="border-color: black">
+        <div class="ui inverted very basic button ">注销</div>
+    </div>
+</div>
+
+
+<div class="article">
+    <div class="ui segment right aligned">
+        <img src="../../static/img/35.jpg" th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+    </div>
+    <div class="ui m-margin-top-large"></div>
+    <div class="m-padded-lr">
+        <div class="ui fluid container">
+
+            <!--中间内容-->
+            <table class="ui tiny fluid selectable striped table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Begin Time</th>
+                    <th>End Time</th>
+                    <th>Openness</th>
+                    <th>Owner</th>
+                </tr>
+                </thead>
+                <tbdoy>
+                    <tr th:each="contest:${contestList}">
+                        <td th:text="${contest.cid}">1000</td>
+                        <td><a href="" th:href="@{/contest/{cid}(cid=${contest.cid})}" th:text="${contest.title}">哈尔滨旅游赛</a></td>
+                        <td th:text="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}">2019-09-12 18:00:00</td>
+                        <td th:text="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}">5 hours</td>
+                        <td>
+                            <div class="ui inverted small button red" th:if="${contest.auth}==3">Private</div>
+                            <div class="ui inverted small button orange" th:if="${contest.auth}==2">Protect</div>
+                            <div class="ui inverted small button green" th:if="${contest.auth}==1">Public</div>
+                        </td>
+                        <td th:text="${contest.user.userName}">jiangxiaoju</td>
+                    </tr>
+                    <!--/*-->
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <tr>
+                        <td>1000</td>
+                        <td>哈尔滨旅游赛</td>
+                        <td>2019-09-12 18:00:00</td>
+                        <td>5 hours</td>
+                        <td>jiangxiaoju</td>
+                    </tr>
+                    <!--*/-->
+                </tbdoy>
+            </table>
+
+
+        </div>
+
+        <!--分页菜单-->
+        <div class="ui pagination menu m-margin-top" th:if="${page}!=null">
+            <a class="item"
+               th:href="@{/contest/list/{page}(page=${page.current - 1 >1?page.current -1: 1}) }">
+                <i class="angle left icon"></i></a>
+            <a class="item" th:each="i:${#numbers.sequence(page.begin,page.end)}"
+               th:href="@{/contest/list/{page}(page=${i}) }"
+               th:attr="data-pagenum=${i}" th:text="${i}"
+               th:classappend="${i==page.current?'active':''}">1</a>
+            <!--/*-->
+            <a class="item">10</a>
+            <a class="item">11</a>
+            <a class="item">12</a>
+            <!--*/-->
+            <a class="item"
+               th:href="@{/contest/list/{page}(page=${page.current + 1 > page.pages?page.pages: page.current + 1}) }"
+            ><i class="angle right icon"></i></a>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    $(function () {
+
+        // $.get('[[@{/ojDailyBoard/list}]]',
+        //     {}, function (data) {
+
+                // console.log(data);
+
+                // var submittedArr=new Array();
+                // var acceptedArr=new Array();
+                // var dateArr=new Array();
+                // for (let i = 0; i < data.length; i++) {
+                //     submittedArr.push(data[i].submitCount);
+                //     acceptedArr.push(data[i].accepted);
+                //     dateArr.push(data[i].collectTime);
+                // }
+                //
+
+                //
+                // console.log(acceptedArr);
+                // console.log(submittedArr);
+                // console.log(dateArr);
+                let date = '2020-05-25';
+                var myChart = echarts.init(document.getElementById('submitChart'));
+
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter(params) {
+                            // console.log(params);
+                            return `<div>${params[0].axisValue}<br/>${params[0].marker}${params[0].seriesName}：${params[0].value}<br/>${params[1].marker}${params[1].seriesName}：${params[1].value}</div>`
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        left: '5%'
+                    },
+                    grid: {
+                        top: 'middle',
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        height: '80%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], //日期。
+                        axisLine: {
+                            lineStyle: {
+                                color: "#D9D9D9",
+                            }
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        axisTick: {
+                            show: true,
+                        },
+                        boundaryGap: false,
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed',
+                                color: '#E9E9E9',
+                                width: 2
+                            }
+                        },
+                        splitNumber: 5,
+                        show: true,
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        splitArea: {
+                            show: false
+                        },
+                    },
+                    series: [{
+                        name: 'Submitted',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80],
+                        color: "#13C7F2",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#13C7F2',
+                            }
+                        },
+                        smooth: false,
+                    }, {
+                        name: 'Accetped',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60],
+                        color: "#00FF00",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#00FF00',
+                            }
+                        },
+                        smooth: false,
+                    }
+                    ]
+                };
+
+                // option.series[0].data=submittedArr;
+                // option.series[1].data=acceptedArr;
+                // option.xAxis.data=dateArr;
+
+                myChart.setOption(option);
+                window.addEventListener("resize", function () {
+                    myChart.resize();
+                });
+
+            // })
+
+    })
+</script>
+
+<script th:replace="admin/_fragments::script">
+    $('.ui.accordion').accordion();
+
+</script>
+</body>
+</html>

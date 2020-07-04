@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title th:text="${blog.title}"></title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css" th:href="@{/plugin/semanticui/semantic.min.css}">
+
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+
+    <script src="../../static/plugin/semanticui/semantic.min.js" th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/typo.css" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" href="../../static/plugin/prism/prism.css" th:href="@{/plugin/prism/prism.css}">
+    <link rel="stylesheet" href="../../static/css/animate.css" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" href="../../static/plugin/tocbot/tocbot.css" th:href="@{/plugin/tocbot/tocbot.css}">
+    <link rel="stylesheet" type="text/css" href="../../static/plugin/simditor/styles/simditor.css" th:href="@{/plugin/simditor/styles/simditor.css}"/>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+
+
+
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(6)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">Online Judge</div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image" style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="waypoint" class="ui m-margin-top-large m-margin scrollTop">
+    <div class="ui m-container-large animated fadeIn">
+        <!--头部信息-->
+        <div class="ui attached segment">
+            <img src="static/img/1.jpg" alt="" class="ui avatar image" th:src="@{${blog.user.avatar}}">
+            <a href="#" target="_blank" th:href="@{/console/{userName}(userName=${blog.user.userName})}" class="ui teal m-margin-r-small" th:text="${blog.user.nickName}">江小举</a>
+            <div class="m-inline-block m-margin-r-small"><i class="calendar alternate icon"></i><span
+                    th:text="${#dates.format(blog.createTime,'yyyy-MM-dd HH:mm:ss')}">2020-04-29</span></div>
+            <div class="ui m-inline-block"><i class="eye icon"></i><span th:text="${blog.views}">2019</span></div>
+        </div>
+
+        <!--    原文内容部分-->
+        <div class="ui  attached  segment m-shadow-small">
+
+
+            <!--    标题部分-->
+            <div class="ui fluid container m-padded-t-large">
+                <h1 id="blogTitleValue" class="ui header  center aligned" th:text="${blog.title}">关于刻意练习的清单</h1>
+            </div>
+            <!--中间主要内容部分-->
+            <div id="content"
+                 class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+                <div id="editormd-view">
+                    <textarea style="display:none;" id="append-test" th:text="${blog.content}" name="test-editormd-markdown-doc">###Hello world!</textarea>
+                </div>
+            </div>
+        </div>
+
+
+        <!--    评论留言块-->
+        <div class="ui bottom m-padded-tb-huge">
+            <!--留言区域列表-->
+            <div class="ui">
+                <div th:fragment="commentList" id="commentList">
+                    <div class="ui big warning message m-margin-top-large" th:if="${#lists.isEmpty(comments)}">
+                        <div class="">no comment yet</div>
+                    </div>
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%"
+                         th:each="comment,stat:${comments}">
+                        <!--                        <h3 class="ui  dividing header"><span class="ui ">1楼</span></h3>-->
+                        <div class="comment">
+                            <a href="javascript:void(0)" class="avatar">
+                                <img src="static/img/35.jpg" th:src="@{${comment.user.avatar}}">
+                            </a>
+                            <div class="content">
+                                <a href="javascript:void(0)" class="author" th:text="${comment.user.nickName}">Elliot
+                                    Fu</a>
+                                <div class="metadata">
+                                    <span class="date"
+                                          th:text="${#dates.format(comment.createTime,'yyyy-MM-dd HH:mm:ss')}">Yesterday at 12:30AM</span>
+                                </div>
+                                <div class="text">
+                                    <p th:utext="${comment.content}">This has been very useful for my research. Thanks
+                                        as
+                                        well!</p>
+                                </div>
+                                <div class="actions">
+                                    <a onclick="reply(this)" class="reply" th:attr="data-commentid=${comment.bcid},data-nickname=${comment.user.nickName},
+                                    data-parentcommentid=${comment.parentCommentId!=null ? comment.parentCommentId:comment.bcid}"
+                                    >reply</a>
+                                    <a onclick="Delete(this)" class="delete"
+                                       th:attr="data-commentid=${comment.bcid}"
+                                       th:if="${session.user}!=null and ${session.user.uid}==${comment.uid}"
+                                    >delete</a>
+                                </div>
+
+                            </div>
+                            <div class="comments">
+                                <div class="comment" th:each="reply,rstat:${comment.replyComments}">
+                                    <a href="javascript:void(0)" class="avatar">
+                                        <img src="static/img/35.jpg" th:src="@{${reply.user.avatar}}">
+                                    </a>
+                                    <div class="content">
+                                        <a href="javascript:void(0)" class="author">
+                                            <span th:text="${reply.user.nickName}">Jenny Hess</span>
+                                            &nbsp;<span th:text="'  @' + ${reply.replyToComment.user.nickName}"
+                                                        class="m-teal">@ 小白</span>
+                                        </a>
+                                        <div class="metadata">
+                                            <span class="date">Just now</span>
+                                        </div>
+                                        <div class="text" th:utext="${reply.content}">
+                                            Elliot you are always so right :)
+                                            <img src="static/img/35.jpg">
+                                        </div>
+                                        <div class="actions">
+                                            <a class="reply" onclick="reply(this)"
+                                               th:attr="data-commentid=${reply.bcid},data-nickname=${reply.user.nickName},
+                                               data-parentcommentid=${reply.parentCommentId!=null?reply.parentCommentId:reply.bcid}"
+                                            >reply</a>
+                                            <a onclick="Delete(this)" class="delete"
+                                               th:attr="data-commentid=${reply.bcid}"
+                                               th:if="${session.user!=null && session.user.uid == reply.uid}">delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--/*-->
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%">
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="static/img/35.jpg">
+                            </a>
+                            <div class="content">
+                                <a class="author">Matt
+                                    <span class="ui mini basic visit-comment left pointing label m-padded-mini">访客</span>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date">Today at 5:42PM</span>
+                                </div>
+                                <div class="text">
+                                    How artistic!
+                                </div>
+                                <div class="actions">
+                                    <a class="reply">回复</a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%">
+                        <!--                        <h3 class="ui dividing header">三楼</h3>-->
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="static/img/35.jpg">
+                            </a>
+                            <div class="content">
+                                <a class="author">Matt
+                                    <span class="ui mini basic visit-comment left pointing label m-padded-mini">访客</span>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date">Today at 5:42PM</span>
+                                </div>
+                                <div class="text">
+                                    How artistic!
+                                </div>
+                                <div class="actions">
+                                    <a class="reply">回复</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--*/-->
+
+                    <!--                分页菜单-->
+                    <div class="ui pagination menu m-margin-top" th:if="${page}!=null">
+                        <a class="item" onclick="changePage(this)"
+                           th:attr="data-pagenum=${page.current - 1 >1?page.current -1: 1}"><i
+                                class="angle left icon"></i></a>
+                        <a class="item" th:each="i:${#numbers.sequence(page.begin,page.end)}" onclick="changePage(this)"
+                           th:attr="data-pagenum=${i}" th:text="${i}"
+                           th:classappend="${i==page.current?'active':''}">1</a>
+                        <!--/*-->
+                        <a class="item">10</a>
+                        <a class="item">11</a>
+                        <a class="item">12</a>
+                        <!--*/-->
+                        <a class="item" onclick="changePage(this)"
+                           th:attr="data-pagenum=${page.current + 1 > page.pages?page.pages: page.current + 1}"><i
+                                class="angle right icon"></i></a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div th:if="${blog.comment}" class="ui segment m-margin-top-large" id="comment-container">
+                <h2 class="ui teal dividing header">Comment</h2>
+                <form action="#" method="post" class="ui form">
+                    <div class="ui error message"></div>
+                    <div id="comment-form" class="m-margin-top-large">
+                        <input type="hidden" name="checkLogin" th:value="${session.user!=null?'user':''}">
+                        <input type="hidden" name="uid" th:if="${session.user!=null}" th:value="${session.user.uid}">
+                        <input type="hidden" name="bid" th:value="${blog.blogId}">
+                        <input type="hidden" name="parentCommentId" value="-1">
+                        <input type="hidden" name="replyCommentId" value="-1">
+                        <input type="hidden" name="email" th:if="${session.user!=null}"
+                               th:value="${session.user.email}">
+                        <div class="ui fluid container m-margin-tb" id="editorcontainer">
+                            <textarea id="editor" class="replysimditor" name="content" placeholder="share something..."></textarea>
+                        </div>
+                        <div class="fields">
+                            <div class="field  m-margin-bottom-small m-mobile-wide">
+                                <button id="commentpost-btn" type="button" class="ui teal button m-mobile-wide"><i
+                                        class="edit icon"></i>send
+                                </button>
+                            </div>
+                            <div class="ui toggle  checkbox">
+                                <div style="height:10px"></div>
+                                <input type="checkbox" name="remind" class="tooltip" data-content="After selection, when someone replies to your comment, you will receive an email reminder" tabindex="0">
+                                <label>reply remind</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="ui big warning message m-margin-top-large" th:if="!${blog.comment}">
+                <div class="">The current blog cannot comment</div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<div id="toolbar" class="m-padded m-fixed m-right-bottom">
+    <div class="ui vertical icon buttons ">
+        <button type="button" class="ui toc teal button">toc</button>
+        <a href="#comment-container" class="ui teal button mini">reply</a>
+        <!--        <button type="button" class="ui share teal button">分享</button>-->
+        <!--        <button class="ui wechat icon button"><i class="weixin icon"></i></button>-->
+        <button class="ui wechat icon button"><i class="big qrcode icon"></i></button>
+        <div id="toTop-button" class="ui icon button"><i class="chevron up icon"></i></div>
+    </div>
+</div>
+
+
+<div class="ui toc-container flowing popup transition hidden" style="width: 300px!important;max-height: 600px;overflow-y: scroll">
+    <ol class="ui js-toc m-link-toc" style="line-height: 1.65;padding-left: 0px;color: teal!important;width: 300px!important;max-height: 550px;">
+        目录
+    </ol>
+</div>
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+
+
+<!--二维码弹框-->
+<div id="qrcode" class="ui wechat-qr flowing popup transition hidden " style="width: 130px !important;">
+    <p style="color: red;font-size: small;text-align:center" class="h6 small">Mobile phone scan code to read this article</p>
+    <!--<img src="./static/images/wechat.jpg" alt="" class="ui rounded image" style="width: 120px !important;">-->
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.min.js"></script>
+<script src="../../static/plugin/prism/prism.js" th:src="@{/plugin/prism/prism.js}"></script>
+
+<script src="../../static/plugin/qrcode/qrcode.min.js" th:src="@{/plugin/qrcode/qrcode.min.js}"></script>
+<script src="../../static/plugin/waypoints/jquery.waypoints.js"
+        th:src="@{/plugin/waypoints/jquery.waypoints.js}"></script>
+<!--<script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>-->
+<script type="text/javascript" src="../../static/plugin/simditor/js/module.js"
+        th:src="@{/plugin/simditor/js/module.js}"></script>
+<script type="text/javascript" src="../../static/plugin/simditor/js/hotkeys.js"
+        th:src="@{/plugin/simditor/js/hotkeys.js}"></script>
+<script type="text/javascript" src="../../static/plugin/simditor/js/uploader.js"
+        th:src="@{/plugin/simditor/js/uploader.js}"></script>
+<script type="text/javascript" src="../../static/plugin/simditor/js/simditor.js"
+        th:src="@{/plugin/simditor/js/simditor.js}"></script>
+
+
+<script th:src="@{/plugin/editormd/lib/marked.min.js}" src="../../static/plugin/editormd/lib/marked.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/prettify.min.js}" src="../../static/plugin/editormd/lib/prettify.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/raphael.min.js}" src="../../static/plugin/editormd/lib/raphael.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/underscore.min.js}" src="../../static/plugin/editormd/lib/underscore.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/sequence-diagram.min.js}" src="../../static/plugin/editormd/lib/sequence-diagram.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/flowchart.min.js}" src="../../static/plugin/editormd/lib/flowchart.min.js"></script>
+<script th:src="@{/plugin/editormd/lib/jquery.flowchart.min.js}" src="../../static/plugin/editormd/lib/jquery.flowchart.min.js"></script>
+<script th:src="@{/plugin/editormd/editormd.js}" src="../../static/plugin/editormd/editormd.js"></script>
+
+<script src="../../static/plugin/tocbot/tocbot.js" th:src="@{/plugin/tocbot/tocbot.js}"></script>
+<script th:replace="_fragments::scriptFragment"></script>
+
+<script>
+
+    var testEditormdView;
+    $(function() {
+        var testEditormdView;
+
+        testEditormdView = editormd.markdownToHTML("editormd-view", {
+            // markdown        : $("#append-test").text() ,//+ "\r\n" + ,//markdown
+            htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
+            // htmlDecode      : "style,script,iframe",  // you can filter tags decode
+            toc             : true,
+            // tocm            : true,    // Using [TOCM]
+            tocContainer    : ".js-toc", // 自定义 ToC 容器层
+
+            //gfm             : false,
+            tocDropdown     : true,
+            // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+            previewCodeHighlight:false,
+            emoji           : true,
+            taskList        : true,
+            tex             : true,  // 默认不解析
+            flowChart       : true,  // 默认不解析
+            sequenceDiagram : true,  // 默认不解析
+        });
+
+
+        $('#editormd-view a').attr('target','_blank');
+        $('table').addClass('ui table');
+        $('pre').addClass("line-numbers");
+        Prism.highlightAll();
+
+    });
+    $(".ui.sticky").sticky({})
+
+    // 提示
+    $('.tooltip').popup({
+        // popup: $('.wechat-qr'),
+        position: 'right center',
+        on: 'hover'
+    });
+
+
+    $('.toc.button').popup({
+        popup: $('.toc-container.popup'),
+        on: 'click',
+        position: 'left center',
+        observeChanges:false,
+        lastResort:true
+    });
+
+
+    $('.wechat').popup({
+        popup: $('.wechat-qr'),
+        position: 'left center',
+    });
+
+
+    var curWwwPath = window.document.location.href;
+    var qrcode = new QRCode("qrcode", {
+        text: curWwwPath,//二维码链接
+        width: 120,
+        height: 120,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+
+    // 滚动检测
+    var waypoint = new Waypoint({
+        element: document.getElementById('waypoint'),
+        handler: function (direction) {
+            if (direction == 'down') {
+                $('#toTop-button').show(100);
+            } else {
+                $('#toTop-button').hide(100);
+            }
+            console.log('Scrolled to waypoint!  ' + direction);
+        }
+    })
+
+
+    // 开启复选框的全部功能
+    $('.ui.checkbox').checkbox();
+
+
+    var editor = new Simditor({
+        textarea: $('#editor'),
+        upload: {
+            url: '[[@{/api/fileupload/simditor}]]', //文件上传的接口地址
+            fileKey: 'upload', //server端获取文件数据的參数名
+            connectionCount: 3,
+            leaveConfirm: 'Uploading file'
+        }
+    });
+
+
+    // 这里标记之后要换种方式，顶一个input标签，当登入状态才存在，代替 直接取session中的值出来  2020-5-21
+    $.fn.form.settings.rules.checkLogin = function () {
+        var flag = [[${session.user} != null]];
+        console.log("是否在线");
+        console.log(flag);
+
+        return flag;
+    };
+
+    $('.ui.form').form({
+        fields: {
+            content: {
+                identifier: 'content',
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: 'Please fill in the comments first'
+                    }
+                ]
+            },
+            checkLogin: {
+                identifier: 'checkLogin',
+                rules: [
+                    {
+                        type: 'checkLogin',
+                        prompt: 'please log in first'
+                    }
+                ]
+            }
+        }
+    });
+
+
+    function clear() {
+        $('[name="parentCommentId"]').val('-1');
+        $('[name="replyCommentId"]').val('-1');
+        $(".simditor-placeholder").text('share something');
+        $('.simditor-body').html('<p><br></p>');
+        $('#remind').removeAttr('checked');
+    }
+
+
+    // 加载评论列表
+
+
+    function commentListLoad(pageNum=1) {
+
+        console.log("加载留言");
+        var bid = $('[name="bid"]').val();
+        $('#commentList').load('[[@{/blogComment/list/}]]' + bid, {
+            'pageNum': pageNum
+        }, function (data) {
+            if(data.flag==false){
+                alert(data.msg);
+            }
+        })
+    }
+
+
+
+
+    // 提交平陵
+    $('#commentpost-btn').click(function () {
+        var flag = $('.ui.form').form('validate form');
+        console.log('validate from');
+        console.log(flag);
+        if (flag) {
+            $.post('[[@{/blogComment/}]]', {
+                'blogId': $('[name="bid"]').val(),
+                'uid': $('[name="uid"]').val(),
+                'parentCommentId': $('[name="parentCommentId"]').val(),
+                'replyCommentId': $('[name="replyCommentId"]').val(),
+                'email': $('[name="email"]').val(),
+                'content': $('[name="content').val(),
+                'remind': $('[name="remind"]').prop('checked'),
+            }, function (data) {
+                if(data.flag==true) {
+                    alert(data.msg);
+                    commentListLoad();
+                }else{
+                    alert(data.msg);
+                }
+                clear();
+            })
+        }
+    });
+
+    function reply(obj) {
+
+        var commentId = $(obj).data('commentid');
+        var parentCommentId = $(obj).data('parentcommentid');
+        var nickName = $(obj).data('nickname');
+
+        $('[name="parentCommentId"]').val(parentCommentId);
+        $('[name="replyCommentId"]').val(commentId);
+
+        var top = $(".ui.form").offset().top;
+        $(".simditor-placeholder").html("<p><br></p>");
+        $(".simditor-placeholder").text("@" + nickName);
+
+        $('.simditor-body').focus();
+
+        $(window).scrollTo(top, 500);
+
+    }
+
+
+    function Delete(obj) {
+        var commentId = $(obj).data('commentid');
+
+        $.ajax({
+            url: '[[@{/blogComment/}]]'+commentId,
+            type: 'delete',
+            contentType: "application/json",//设置请求参数类型为json字符串
+            dataType: "json",
+            success: function (result) {
+                if(result.flag==true) {
+                    commentListLoad();
+                }else{
+                    alert(result.msg);
+                }
+            }
+        });
+    }
+
+    function changePage(obj) {
+        var pageNum = $(obj).data('pagenum');
+        var bid = $('[name="bid"]').val();
+        $('#commentList').load('[[@{/comment/list/}]]' + bid, {
+            'pageNum': pageNum
+        }, function (data) {
+
+        })
+    }
+
+
+    $('#toTop-button').click(function () {
+
+        var top = $(".scrollTop").offset();
+        $(window).scrollTop(top);
+    });
+
+
+    $(function () {
+
+        commentListLoad();
+
+    })
+</script>
+</body>
+</html>

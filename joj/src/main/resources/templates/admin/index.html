@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>admin</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <script src="../../static/js/echarts.min.js" th:src="@{/js/echarts.min.js}"></script>
+
+
+</head>
+<body>
+
+<div class="ui inverted left fixed vertical menu container overflow m-admin-menu" th:replace="admin/_fragments::consolemenu(1)">
+    <div class="m-margin-tb-large">
+        <img src="../../static/img/35.jpg" alt="" class="ui tiny centered circular image">
+                <p class="ui header text center aligned m-margin-top-large" style="color: white">管理员:   <span>jiang</span></p>
+    </div>
+
+    <a class="item active" style="font-size: 1.2em">
+        <p class="header">Dashboard</p>
+    </a>
+
+    <div class="item" style="font-size: 1.2em">
+       <p class="header">User</p>
+        <div class="menu">
+            <a href="#" class="item">userList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Blog</p>
+        <div class="menu">
+            <a href="#" class="item">BlogList</a>
+            <a href="#" class="item">BlogCommentList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Problem</p>
+        <div class="menu">
+            <a href="#" class="item">ProblemList</a>
+            <a href="#" class="item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Contest</p>
+        <div class="menu">
+            <a href="#" class="item">ContestList</a>
+            <a href="#" class="item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Message</p>
+        <div class="menu">
+            <a href="#" class="item">MessageList</a>
+        </div>
+    </div>
+    <div class="ui item " style="border-color: black">
+        <div class="ui inverted very basic button ">注销</div>
+    </div>
+</div>
+
+
+<div class="article">
+    <div class="ui segment right aligned">
+        <img src="../../static/img/35.jpg" alt="" class="ui avatar image">
+    </div>
+    <div class="ui m-margin-top-large"></div>
+    <div class="ui segment m-shadow-small">
+        <div class="ui header">Submit Statistics</div>
+        <div class="ui divider"></div>
+        <div class="">
+            <div id="submitChart" style="min-height: 300px">
+                <div class="ui active loader"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+
+        $.get('[[@{/ojDailyBoard/list}]]',
+            {}, function (data) {
+
+                console.log(data);
+
+                var submittedArr=new Array();
+                var acceptedArr=new Array();
+                var dateArr=new Array();
+                for (let i = 0; i < data.length; i++) {
+                    submittedArr.push(data[i].submitCount);
+                    acceptedArr.push(data[i].accepted);
+                    dateArr.push(data[i].collectTime);
+                }
+
+
+
+                console.log(acceptedArr);
+                console.log(submittedArr);
+                console.log(dateArr);
+                let date = '2020-05-25';
+                var myChart = echarts.init(document.getElementById('submitChart'));
+
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter(params) {
+                            // console.log(params);
+                            return `<div>${params[0].axisValue}<br/>${params[0].marker}${params[0].seriesName}：${params[0].value}<br/>${params[1].marker}${params[1].seriesName}：${params[1].value}</div>`
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        left: '5%'
+                    },
+                    grid: {
+                        top: 'middle',
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        height: '80%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], //日期。
+                        axisLine: {
+                            lineStyle: {
+                                color: "#D9D9D9",
+                            }
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        axisTick: {
+                            show: true,
+                        },
+                        boundaryGap: false,
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed',
+                                color: '#E9E9E9',
+                                width: 2
+                            }
+                        },
+                        splitNumber: 5,
+                        show: true,
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        splitArea: {
+                            show: false
+                        },
+                    },
+                    series: [{
+                        name: 'Submitted',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80],
+                        color: "#13C7F2",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#13C7F2',
+                            }
+                        },
+                        smooth: false,
+                    }, {
+                        name: 'Accetped',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60],
+                        color: "#00FF00",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#00FF00',
+                            }
+                        },
+                        smooth: false,
+                    }
+                    ]
+                };
+
+                option.series[0].data=submittedArr;
+                option.series[1].data=acceptedArr;
+                option.xAxis.data=dateArr;
+
+                myChart.setOption(option);
+                window.addEventListener("resize", function () {
+                    myChart.resize();
+                });
+
+            })
+
+    })
+</script>
+
+<script th:replace="admin/_fragments::script">
+    $('.ui.accordion').accordion();
+
+</script>
+</body>
+</html>

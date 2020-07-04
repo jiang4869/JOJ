@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-container-large">
+    <div class="ui fluid container m-margin-large">
+
+        <!--比赛简介-->
+        <div th:replace="contest/_contestFragments::contestInfo">
+            <div class="ui stackable segment">
+                <div class="ui fluid container">
+                    <div class="ui grid">
+                        <div class="four wide column text left aligned fluid container">
+                            <strong>Begin:</strong> 2020-04-05 16:09 CST
+                        </div>
+                        <div class="eight wide column">
+                            <h1 class="ui text center aligned header">线段树中等</h1>
+                        </div>
+                        <div class="four wide column text right aligned fluid container">
+                            <strong>End:</strong> 2020-04-05 16:09 CST
+                        </div>
+                    </div>
+                    <div class="m-margin-top"></div>
+                    <div class="ui progress green" data-percent="100" id="contest-progress">
+                        <div class="bar">
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fluid container">
+                    <div class="ui basic buttons">
+                        <button class="ui button">Setting</button>
+                        <button class="ui button">Clone</button>
+                        <button class="ui button">Update</button>
+                        <button class="ui button">Delete</button>
+
+                    </div>
+                    <div class="ui inverted small button red right floated">Private</div>
+                    <div class="ui inverted small button orange right floated">Protect</div>
+                    <div class="ui inverted small button green right floated">Public</div>
+                </div>
+
+            </div>
+            <div class="ui info message">
+                <ul class="list">
+                    这是一份公告
+                </ul>
+            </div>
+        </div>
+        <div class="ui stackable secondary menu" th:replace="contest/_contestFragments::contestMenu(6)">
+            <a class="item">Overview</a>
+            <a class="item">Problem</a>
+            <a class="item">My Submission</a>
+            <a class="item">Status</a>
+            <a class="item">Rank</a>
+            <a class="item active">Comments</a>
+        </div>
+
+
+        <div class="ui container fluid animated">
+            <div class="ui segment">
+
+                <div id="message-form">
+                    <form action="#" class="ui form">
+                        <input type="hidden" name="parentCommentId" value="-1">
+                        <input type="hidden" name="replyCommentId" value="-1">
+                        <div class="ui fluid container m-margin-tb" id="editorcontainer">
+                            <textarea id="editor" class="replysimditor" name="content" placeholder="share something..."></textarea>
+                        </div>
+                        <div class="fields">
+
+                            <div class="field  m-margin-bottom-small m-mobile-wide">
+                                <button id="commentpost-btn" type="button" class="ui teal button m-mobile-wide"><i
+                                        class="edit icon"></i>sender
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ui error message"></div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="ui">
+                <div  id="commentList">
+
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%"
+                         th:each="comment,stat:${comments}">
+                        <div class="comment">
+                            <a href="javascript:void(0)" class="avatar">
+                                <img src="../../static/img/35.jpg" th:src="@{${comment.user.avatar}}">
+                            </a>
+                            <div class="content">
+                                <a href="javascript:void(0)" class="author" th:text="${comment.user.nickName}">Elliot
+                                    Fu</a>
+                                <div class="metadata">
+                                    <span class="date"
+                                          th:text="${#dates.format(comment.createTime,'yyyy-MM-dd HH:mm:ss')}">Yesterday at 12:30AM</span>
+                                </div>
+                                <div class="text">
+                                    <p th:utext="${comment.content}">This has been very useful for my research. Thanks
+                                        as
+                                        well!</p>
+                                </div>
+                                <div class="actions">
+                                    <a onclick="reply(this)" class="reply" th:attr="data-commentid=${comment.ccid},data-nickname=${comment.user.nickName},
+                                    data-parentcommentid=${comment.parentCommentId!=null ? comment.parentCommentId:comment.ccid}"
+                                    >reply</a>
+                                    <a onclick="Delete(this)" class="delete"
+                                       th:attr="data-commentid=${comment.ccid}"
+                                       th:if="${session.user}!=null and ${session.user.uid}==${comment.uid} "
+                                    >delete</a>
+                                </div>
+
+                            </div>
+                            <div class="comments">
+                                <div class="comment" th:each="reply,rstat:${comment.replyComments}">
+                                    <a href="javascript:void(0)" class="avatar">
+                                        <img src="../../static/img/35.jpg" th:src="@{${reply.user.avatar}}">
+                                    </a>
+                                    <div class="content">
+                                        <a href="javascript:void(0)" class="author">
+                                            <span th:text="${reply.user.nickName}">Jenny Hess</span>
+                                            &nbsp;<span th:text="'  @' + ${reply.replyToComment.user.nickName}"
+                                                        class="m-teal">@ 小白</span>
+                                        </a>
+                                        <div class="metadata">
+                                            <span class="date">Just now</span>
+                                        </div>
+                                        <div class="text" th:utext="${reply.content}">
+                                            Elliot you are always so right :)
+
+                                        </div>
+                                        <div class="actions">
+                                            <a class="reply" onclick="reply(this)"
+                                               th:attr="data-commentid=${reply.ccid},data-nickname=${reply.user.nickName},
+                                               data-parentcommentid=${reply.parentCommentId!=null?reply.parentCommentId:reply.ccid}"
+                                            >reply</a>
+                                            <a onclick="Delete(this)" class="delete"
+                                               th:attr="data-commentid=${reply.ccid}"
+                                               th:if="${session.user!=null && session.user.uid == reply.uid}">delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--/*-->
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%">
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="../../static/img/35.jpg">
+                            </a>
+                            <div class="content">
+                                <a class="author">Matt
+                                    <span class="ui mini basic visit-comment left pointing label m-padded-mini">访客</span>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date">Today at 5:42PM</span>
+                                </div>
+                                <div class="text">
+                                    How artistic!
+                                </div>
+                                <div class="actions">
+                                    <a class="reply">回复</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui threaded teal comments segment m-shadow-small" style="max-width: 100%">
+                        <!--                        <h3 class="ui dividing header">三楼</h3>-->
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="../../static/img/35.jpg">
+                            </a>
+                            <div class="content">
+                                <a class="author">Matt
+                                    <span class="ui mini basic visit-comment left pointing label m-padded-mini">访客</span>
+                                </a>
+                                <div class="metadata">
+                                    <span class="date">Today at 5:42PM</span>
+                                </div>
+                                <div class="text">
+                                    How artistic!
+                                </div>
+                                <div class="actions">
+                                    <a class="reply">回复</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--*/-->
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="contest/_contestFragments::contestScript"></script>
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+
+<script>
+    // 开启复选框的全部功能
+    $('.ui.checkbox').checkbox();
+
+    $('.tooltip').popup({
+        // popup: $('.wechat-qr'),
+        position: 'right center',
+        on: 'hover'
+    });
+
+
+    $('.ui.form').form({
+        fields: {
+            content: {
+                identifier: 'content',
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: 'The message can not be empty'
+                    }
+                ]
+            }
+
+        }
+    });
+
+
+
+    function clear() {
+        $('[name="parentCommentId"]').val('-1');
+        $('[name="replyCommentId"]').val('-1');
+        $("#editor").attr('placeholder','share something');
+        $('#editor').html('');
+    }
+
+
+    $('#commentpost-btn').click(function () {
+        var flag = $('.ui.form').form('validate form');
+        console.log('validate from');
+        console.log(flag);
+        if (flag) {
+            $.post('[[@{/contest/}]]'+'[[${contest.cid}]]'+'/comment', {
+                'content': $('[name="content').val(),
+                'parentCommentId': $('[name="parentCommentId"]').val(),
+                'replyCommentId': $('[name="replyCommentId"]').val(),
+            }, function (data) {
+                if (data.flag == true) {
+                    alert("Successful message");
+                   window.location.reload();
+                }else{
+                    alert(data.msg)
+                }
+                clear();
+            })
+        }
+    });
+
+
+    function reply(obj) {
+        var commentId = $(obj).data('commentid');
+        var parentCommentId = $(obj).data('parentcommentid');
+
+        $('[name="parentCommentId"]').val(parentCommentId);
+        $('[name="replyCommentId"]').val(commentId);
+        var nickName = $(obj).data('nickname');
+        var top = $(".ui.form").offset().top;
+        $("#editor").attr('placeholder',"@" + nickName);
+        $('#editor').focus();
+
+        $(window).scrollTo(top, 500);
+    }
+
+
+    function Delete(obj) {
+        var messageId = $(obj).data('commentid');
+        $.ajax({
+            url: '[[@{/message/}]]'+messageId,
+            type: 'delete',
+            contentType: "application/json",//设置请求参数类型为json字符串
+            dataType: "json",
+            success: function (result) {
+                if(result.flag==true) {
+                   window.reload();
+                }else{
+                    alert(result.msg);
+                }
+            }
+        });
+    }
+
+
+
+
+</script>
+
+<script>
+    $('.oj.ui.dropdown')
+        .dropdown({
+            // 当选择相应 oj后，用ajax发送请求
+            onChange: function (value, text, $selectedItem) {
+                // alert(value);
+            }
+        });
+
+    $("#contest-progress").progress({
+        className: {
+            success: 'success'
+        }
+    });
+
+</script>
+
+</body>
+</html>

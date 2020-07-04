@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Contest</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(3)">
+    <div class="ui fluid  container ">
+        <div class="ui huge grid secondary pointing  stackable  menu padded">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide active blue"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../../static/img/35.jpg" class="ui avatar image"
+                                                           style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="m-container-small">
+    <div class="ui container m-margin-large">
+
+        <form class="ui form" method="post">
+            <input type="hidden" name="cid" th:value="${contest.cid}">
+            <div class="ui header dividing">Basic Info</div>
+            <div class="field">
+                <label>Type</label>
+                <div class="m-inline-block">
+                    <div class="ui button"><img src="../../static/img/icpc.gif" th:src="@{/img/icpc.gif}"
+                                                style="height: 20px;width: 20px;"
+                                                alt=""> Classical Contest
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label>Title</label>
+                <div class="field">
+                    <input type="text" name="title" th:value="${contest.title}" placeholder="title">
+                </div>
+            </div>
+            <div class="field">
+                <label>BeginTime</label>
+                <div class="field">
+                    <input th:if="${contest.cid!=null}" type="text" name="beginTime" readonly th:value="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}" placeholder="eg:2020-06-19 23:59:59">
+                    <input th:if="${contest.cid==null}" type="text" name="beginTime"  th:value="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}" placeholder="eg:2020-06-19 23:59:59">
+                </div>
+            </div>
+            <div class="field">
+                <label>EndTime</label>
+                <div class="field">
+                    <input type="text" name="endTime" th:value="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}" placeholder="eg:2020-06-19 23:59:59">
+                </div>
+            </div>
+            <div class="field">
+                <label>Openness</label>
+                <div class="field">
+                    <select name="auth" class="ui auth dropdown">
+                        <option th:selected="${contest.auth == 1}" value="1">Public - any one can see and submit</option>
+                        <option th:selected="${contest.auth == 2}" value="2">Protected - any one can see, but only the contest end or knowing the contest password</option>
+                        <option th:selected="${contest.auth == 3}" value="3">Private - only users knowing contest password can see and submit</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field" id="password" style="display: none" th:style="${contest.auth==1}?'display: none'">
+                <label>Password</label>
+                <input name="password" type="password" th:value="${contest.password}" placeholder="password">
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <textarea name="description" th:value="${contest.description}" placeholder="in markdown"></textarea>
+            </div>
+            <div class="field">
+                <label>Announcement</label>
+                <textarea name="announcement" th:value="${contest.announcement}" placeholder="in markdown"></textarea>
+            </div>
+            <div class="ui header dividing">Problem Set</div>
+            <table class="ui relaxed fluid selectable table text center aligned">
+                <thead>
+                <tr>
+                    <th id="addBtn"><img src="../../static/img/ico_add.png" th:src="@{/img/ico_add.png}" height="18"
+                                         border="0" alt=""></th>
+                    <th>OJ</th>
+                    <th>ProbNum</th>
+                    <th>Alias</th>
+                    <th></th>
+                    <th>Title</th>
+                </tr>
+                </thead>
+                <tbody id="problemBody">
+                <tr th:if="${problemList}!=null" th:each="problem:${problemList}">
+                    <td><img src="../../static/img/no.png" th:src="@{/img/no.png}" alt="" height="18" border="0"></td>
+                    <td>
+                            <div class="field">
+                                <select name="language" class="ui oj">
+                                    <option value="HDU">HDU</option>
+                                    <!--/*-->
+                                    <option value="CodeForces">CodeForces</option>
+                                    <!--*/-->
+                                </select>
+                            </div>
+                    </td>
+                    <td>
+                        <input type="text" th:value="${problem.problem.originProb}" name="probNum">
+                    </td>
+                    <td>
+                        <input type="text" th:value="${problem.alias}" name="alias">
+                    </td>
+                    <td th:text="${problem.num}">A</td>
+                    <td><a href="" target="_blank" th:href="${problem.problem.url}" th:text="${problem.problem.title}"></a></td>
+                </tr>
+                <tr th:if="${problemList}==null">
+                    <td><img src="../../static/img/no.png" th:src="@{/img/no.png}" alt="" height="18" border="0"></td>
+                    <td>
+                        <div class="field">
+                            <select name="language" class="ui oj">
+                                <option value="HDU">HDU</option>
+                                <!--/*-->
+                                <option value="CodeForces">CodeForces</option>
+                                <!--*/-->
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="text" name="probNum">
+                    </td>
+                    <td>
+                        <input type="text" name="alias">
+                    </td>
+                    <td>A</td>
+                    <td>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+        </form>
+
+
+    </div>
+    <div class="ui error message" >
+        <ul></ul>
+    </div>
+    <button class="ui basic button" id="submit" th:if="${contest.cid}==null">Submit</button>
+    <button class="ui basic button" id="update" th:if="${contest.cid}!=null">Update</button>
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+<script th:replace="_fragments::scriptFragment"></script>
+<script>
+    $('.ui.auth.dropdown').dropdown({
+        onChange: function (value, text, $selectedItem) {
+            console.log(value);
+            if(value==1){
+                $('#password').hide();
+            }else{
+                $('#password').show();
+            }
+
+        }
+    })
+
+    function updateNum() {
+        $('#problemBody tr').each(function (index) {
+            $num = $("td:nth-last-child(2)", $(this));
+            console.log($num.html());
+            if ($num.html() >= 'A' && $num.html() <= 'Z') {
+                $num.html(String.fromCharCode(65 + index));
+            } else {
+                $num.html("")
+            }
+        })
+    }
+
+    $('#addBtn').click(function () {
+        var html = $('#problemBody >tr:nth-last-child(1)').html();
+        // console.log(html);
+
+
+        $('#problemBody').append('<tr>' + html + '</tr>');
+        $('#problemBody >tr:nth-last-child(1) td:nth-last-child(1)').html("");
+        // console.log(html);
+        updateNum();
+    })
+    $(document).on('blur', 'input[name=probNum]', function () {
+
+        $siblings = $(this).parent().siblings();
+
+        var originOJ = $('option:selected', $siblings).val();
+        var probNum = $(this).val();
+
+        console.log($siblings);
+
+
+        // console.log($(siblings[4]).html('Not Such Problem'))
+        // console.log($('[name=alias]', $siblings).val());
+        $.post('[[@{/problem/findProblem}]]', {
+            'originOJ': originOJ,
+            'probNum': probNum
+        }, function (data) {
+            console.log(data)
+
+            if (data.flag == true) {
+
+                var a = '<a target="_blank" href="' + data.data.url + '">' + data.data.title + '</a>';
+                // console.log(a);
+                // $('td:nth-last-child(1)', $siblings).text(a);
+                // console.log($('td:nth-last-child(1)', $siblings).html())
+                console.log(a);
+                $siblings[4].innerHTML = a;
+            } else {
+                // $('td:nth-last-child(1)', $siblings).text(data.msg);
+                $siblings[4].innerHTML = data.msg;
+            }
+
+        })
+    })
+
+
+    $(document).on('click', '#problemBody tr>td:nth-child(1)', function () {
+        console.log("delete");
+        if ($('#problemBody >tr').length > 1) {
+            $(this).parent().remove();
+        } else {
+
+            $td = $('#problemBody >tr').children('td');
+            $td[2].innerHTML = $td[3].innerHTML = '';
+            console.log($td);
+
+        }
+
+        updateNum();
+    })
+
+    // $('[name=probNum]').change(function () {
+    //     console.log($(this).val());
+    //
+    // })
+
+    // $('[name=probNum]').on('blur',this,function () {
+    //     console.log($(this).val());
+    // })
+</script>
+<!--表单校验-->
+<script>
+$('.ui.error.message').hide();
+
+
+    $('#submit').click(function () {
+        var flag = $('.ui.form').form('validate form');
+        if(!flag)
+            return;
+        var checkTimeFlag = checkTime();
+        if(!checkTimeFlag)
+            return;
+        var checkProblemFlag=checkProblem();
+        console.log(checkProblemFlag);
+        if(checkProblemFlag==false){
+            $('.ui.error.message').show();
+            $('.ui.error.message').html('<li> Problem is not ready</li>');
+            return;
+        }else{
+            $('.ui.error.message').hide();
+        }
+
+        var checkPasswordFlag=checkPassword();
+
+        if(checkPasswordFlag==false){
+            $('.ui.error.message').show();
+            $('.ui.error.message').html('<li>Please provide password</li>');
+            return ;
+        }else{
+            $('.ui.error.message').hide();
+
+        }
+
+        if(flag&&checkProblemFlag&&checkProblemFlag){
+            console.log('ok');
+
+            var problemList=getProblemList() ;
+            console.log(problemList);
+            var beginTime = $('[name=beginTime]').val();
+            var endTime = $('[name=endTime]').val();
+
+            $.post('[[@{/contest/}]]',{
+                'problemList':problemList,
+                'title':$('[name=title]').val(),
+                'beginTime':beginTime,
+                'endTime':endTime,
+                'description':$('[name=description]').val(),
+                'announcement':$('[name=announcement]').val(),
+                'type':1,
+                'auth':$(".ui.auth.dropdown").dropdown('get value'),
+                'password':$('[name=password]').val()
+            },function (data) {
+                console.log(data);
+                if(data.flag==true){
+
+                    window.location='[[@{/contest/}]]'+data.data.cid;
+                }else {
+                    alert(data.msg)
+                }
+            } );
+        }
+
+    });
+
+    $('#update').click(function () {
+        var flag = $('.ui.form').form('validate form');
+        if(!flag)
+            return;
+        var checkTimeFlag = checkTime(true);
+        if(!checkTimeFlag)
+            return;
+        console.log("time ok");
+        var checkProblemFlag=checkProblem();
+        console.log(checkProblemFlag);
+        if(checkProblemFlag==false){
+            $('.ui.error.message').show();
+            $('.ui.error.message').html('<li> Problem is not ready</li>');
+            return;
+        }else{
+            $('.ui.error.message').hide();
+        }
+
+        var checkPasswordFlag=checkPassword();
+
+        if(checkPasswordFlag==false){
+            $('.ui.error.message').show();
+            $('.ui.error.message').html('<li>Please provide password</li>');
+            return ;
+        }else{
+            $('.ui.error.message').hide();
+
+        }
+
+        if(flag&&checkProblemFlag&&checkProblemFlag){
+            console.log('ok');
+
+            var problemList=getProblemList() ;
+            console.log(problemList);
+            var beginTime = $('[name=beginTime]').val();
+            var endTime = $('[name=endTime]').val();
+
+
+            $.ajax({
+                type: "put",
+                url: '[[@{/contest/}]]'+$('[name="cid"]').val(),
+                contentType:"application/json",//设置请求参数类型为json字符
+                data:JSON.stringify( {
+                    'cid':$('[name="cid"]').val(),
+                    'problemList':problemList,
+                    'title':$('[name=title]').val(),
+                    'beginTime':beginTime,
+                    'endTime':endTime,
+                    'description':$('[name=description]').val(),
+                    'announcement':$('[name=announcement]').val(),
+                    'type':1,
+                    'auth':$(".ui.auth.dropdown").dropdown('get value'),
+                    'password':$('[name=password]').val()
+                }),
+
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.flag == true) {
+                        alert('update successfully');
+                        window.location='[[@{/contest/}]]'+$('[name="cid"]').val();
+                    } else {
+                        alert(data.msg);
+                    }
+                },
+                error: function () {
+                    alert("Saved failed！");
+                }
+            });
+
+
+        }
+
+    });
+
+
+    function checkPassword() {
+        var auth=$(".ui.auth.dropdown").dropdown('get value');
+        var flag=true;
+        if(auth!=1){
+            var password=$('[name=password]').val();
+            if(password==null||password.replace(/\s+/g,"").length==0){
+                flag=false;
+            }
+        }
+        return flag;
+    }
+
+    function getProblemList() {
+        var arr=new Array();
+        $('#problemBody tr').each(function (index) {
+            $problemNum = $("td:nth-child(3) input", $(this));
+            $alias=$("td:nth-child(4) input", $(this));
+            $num=$('td:nth-child(5)',$(this));
+            var oj=  $('.ui.oj',this).dropdown('get value');
+            console.log($problemNum[0].value);
+            // console.log($alias[0].value);
+            // console.log(oj);
+            // console.log($num.html());
+
+            arr.push({
+                'oj':oj,
+                'problemNum':$problemNum[0].value,
+                'alias':$alias[0].value,
+                'num':$num.html()
+            });
+
+/*
+    private String oj;
+    private String problemNum;
+    private String alias;
+    private String num;
+ */
+
+        });
+        return JSON.stringify(arr);
+    }
+    function checkProblem() {
+        var flag=true;
+        $('#problemBody tr').each(function (index) {
+            $problem = $("td:nth-last-child(1)", $(this));
+            console.log($problem.html());
+            if($problem.html()=='No such problem!'||$problem.html()==null||$problem.html().replace(/\s+/g,"").length==0){
+               flag=false;
+               console.log(false)
+            }
+        });
+        return flag;
+    }
+
+
+    function checkTime(isUpdate=false) {
+        var beginTime = $('[name=beginTime]').val();
+        var endTime = $('[name=endTime]').val();
+
+        var flag = false;
+        $.post({
+            url: '[[@{/api/checkContestTime}]]',
+            async: false,
+            data: {
+                'beginTime': beginTime,
+                'endTime': endTime
+            },
+            success: function (data) {
+                flag = data.flag;
+                console.log(data);
+                if (data.flag == true||(data.flag==false&&data.type==1&&isUpdate==true)) {
+                    console.log('time true');
+                    flag=true;
+                    $('.ui.error.message').hide();
+                } else {
+                    $('.ui.error.message').show();
+                    $('.ui.error.message').html('<li>' + data.msg + '</li>');
+                }
+            }
+        });
+        return flag;
+    };
+
+
+    $('.ui.form').form({
+        inline: true,
+        fields: {
+            title: {
+                identifier: 'title',
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: 'The title can not be blank'
+                    }
+                ]
+            },
+            beginTime: {
+                identifier: 'beginTime',
+                rules: [
+                    {
+                        type: 'regExp',
+                        value: /^(((20[0-3][0-9]-(0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|(20[0-3][0-9]-(0[2469]|11)-(0[1-9]|[12][0-9]|30))) (20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9])$/i,
+                        prompt: 'Begin Time wrong time format'
+                    }
+                ]
+            },
+            endTime: {
+                identifier: 'endTime',
+                rules: [
+                    {
+                        type: 'regExp',
+                        value: /^(((20[0-3][0-9]-(0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|(20[0-3][0-9]-(0[2469]|11)-(0[1-9]|[12][0-9]|30))) (20|21|22|23|[0-1][0-9]):[0-5][0-9]:[0-5][0-9])$/i,
+                        prompt: 'End time wrong time format'
+                    }
+                ]
+            }
+        }
+    })
+</script>
+</body>
+</html>

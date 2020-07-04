@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title th:text="${problem.title}">ProblemList</title>
+    <link rel="stylesheet" href="../../static/plugin/semanticui/semantic.min.css"
+          th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../../static/plugin/semanticui/semantic.min.js"
+            th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <script src="../../static/js/echarts.min.js" th:src="@{/js/echarts.min.js}"></script>
+
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {inlineMath: [ ['$$$','$$$'] ], displayMath: [ ['$$$$$$','$$$$$$'] ]}
+        });
+
+
+    </script>
+
+
+</head>
+<body>
+
+<div class="ui inverted left fixed vertical menu container overflow m-admin-menu" th:replace="admin/_fragments::consolemenu(5)">
+    <div class="m-margin-tb-large">
+        <img src="../../static/img/35.jpg" alt="" class="ui tiny centered circular image">
+                <p class="ui header text center aligned m-margin-top-large" style="color: white">管理员:   <span>jiang</span></p>
+    </div>
+
+    <a class="active" style="font-size: 1.2em">
+        <p class="header">Dashboard</p>
+    </a>
+
+    <div class="item " style="font-size: 1.2em">
+       <p class="header">User</p>
+        <div class="menu">
+            <a href="#" class="item">userList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Blog</p>
+        <div class="menu">
+            <a href="#" class="item">BlogList</a>
+            <a href="#" class="item">BlogCommentList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Problem</p>
+        <div class="menu">
+            <a href="#" class="active item">ProblemList</a>
+            <a href="#" class="item">SubmissionList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Contest</p>
+        <div class="menu">
+            <a href="#" class="item">ContestList</a>
+        </div>
+    </div>
+    <div class="item" style="font-size: 1.2em">
+        <p class="header">Message</p>
+        <div class="menu">
+            <a href="#" class="item">MessageList</a>
+        </div>
+    </div>
+    <div class="ui item " style="border-color: black">
+        <div class="ui inverted very basic button ">注销</div>
+    </div>
+</div>
+
+
+<div class="article">
+    <div class="ui segment right aligned">
+        <img src="../../static/img/35.jpg" th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+    </div>
+    <div class="ui m-margin-top-large"></div>
+    <div class="m-padded-lr">
+        <div class="ui m-container-huge m-margin-top-large m-margin-large">
+            <div class="ui stackable centered grid">
+
+
+                <!--        题目-->
+                <div class="twelve wide column">
+                    <div class="ui title">
+                        <h1 class="ui header  text center aligned" th:text="${problem.title}">爱学习的Hang</h1>
+                        <div class="ui fluid container text center aligned">
+                            TimeLimit:<span th:text="${problem.timeLimit}"></span>MS MemoryLimit:<span
+                                th:text="${problem.memoryLimit}"></span>B
+                        </div>
+                        <div class="ui fluid container text center aligned">
+                            64-bit integer IO format: <span class="ui label" th:text="${problem.IOFormat}">%lld</span>
+                        </div>
+
+                    </div>
+                    <!--题目描述-->
+                    <div class="ui segments">
+                        <div class="ui secondary segment">
+                            Problem Description
+                        </div>
+                        <div class="ui segment" th:utext="${description.description}">
+                            总所周知，Hang是一个爱学习的人。
+
+                            经过一次又一次的学习，Hang发现自己的学习效率呈一条类抛物线。
+
+                            简单点说，就是从学习开始，学习精力单调不减，到一个临界值后，单调不增
+
+                            现在Hang对今天要学习的知识点按顺序标出精力值，Hang希望能学习尽量多的知识点。
+
+                            Hang可以选择一些知识点不看，但一定要按给出的顺序从左往右学，而且要保证
+
+                            在临界值（或者说是最大值）之前，对于任意i
+
+                            ,a[i]
+                            <=a[j]。
+
+                            在临界值（或者说是最大值）之后，对于任意i
+
+                            ,a[i]>=a[j]。
+
+                            为了方便大家AC（你确定不是因为你懒得写标程？）
+
+                            第一个（或最后一个）学习知识点可以是最大值。也就是说，曲线可以只单调不减或只单调不增。
+                        </div>
+                    </div>
+                    <!--样例-->
+                    <div class="ui segments">
+                        <div class="ui secondary segment">
+                            Input
+                        </div>
+                        <div class="ui segment" th:utext="${description.input}">
+                            <div class="panel_content">
+                                There are several test cases. Each test case consists of
+                                <br>
+                                <br>a line containing two integers between 1 and 100: n and k
+                                <br>n lines, each with n numbers: the first line contains the number of blocks of cheese at
+                                locations (0,0) (0,1) ... (0,n-1); the next line contains the number of blocks of cheese at
+                                locations (1,0), (1,1), ... (1,n-1), and so on.
+                                <br>The input ends with a pair of -1's.
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui segments">
+                        <div class="ui secondary segment">
+                            Output
+                        </div>
+                        <div class="ui segment" th:utext="${description.output}">
+                            对于每组数据输出一个值，表示Hang最多能学习多少个知识点
+                        </div>
+                    </div>
+
+
+                    <div class="m-margin-bottom-large" th:each="sample,stat:${description.sampleList}">
+                        <div class="ui segments">
+                            <div class="ui secondary segment" th:text="|SampleInput ${stat.count}|">
+                                SampleInput
+                            </div>
+                            <div class="ui segment" th:utext="${sample.input}"
+                                 style="padding-top: 0;padding-bottom: 0"></div>
+                        </div>
+                        <div class="ui segments">
+                            <div class="ui secondary segment" th:text="|SampleOutput ${stat.count}|">
+                                SampleOutput
+                            </div>
+                            <div class="ui segment" th:utext="${sample.output}" style="padding-top: 0;padding-bottom: 0">
+                                4
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segments" th:if="${!#strings.isEmpty(description.hint)}">
+                        <div class="ui secondary segment">
+                            Hint
+                        </div>
+                        <div class="ui segment" th:utext="${description.hint}">
+                            对于每组数据输出一个值，表示Hang最多能学习多少个知识点
+                        </div>
+                    </div>
+
+                    <div class="ui segments" th:if="${!#strings.isEmpty(problem.source)}">
+                        <div class="ui secondary segment">
+                            Source
+                        </div>
+                        <div class="ui segment" th:utext="${problem.source}">
+                            对于每组数据输出一个值，表示Hang最多能学习多少个知识点
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <!--右边的top-->
+                <div class="four wide column">
+                    <div class="ui">
+                        <a href="" target="_blank" th:href="${problem.url}"
+                           th:text="|${problem.originOJ} ${problem.originProb}|">HDU 1103</a>
+                    </div>
+                    <div class="ui segment">
+                        <div class="ui header">Statistics</div>
+                        <div id="main" class="static-chart" style="height: 300px">
+                            <div class="ui active loader"></div>
+                        </div>
+                    </div>
+
+                    <div class="ui segment">
+                        <div class="ui header">Tag</div>
+                        <div class="ui divider"></div>
+
+
+                        <button class="ui button label m-margin-top-small" th:each="tag:${tags}" th:text="${tag.tagName}">
+                            困难
+                        </button>
+                        <!--/*-->
+                        <a class="ui button label">简单</a>
+                        <button class="ui button label m-margin-top-small">二分</button>
+                        <button class="ui button label m-margin-top-small">线段树</button>
+                        <button class="ui button label m-margin-top-small">模拟</button>
+                        <button class="ui button label m-margin-top-small">暴力</button>
+                        <button class="ui button label m-margin-top-small">思维</button>
+                        <button class="ui button label m-margin-top-small">贪心</button>
+                        <button class="ui button label m-margin-top-small">字符串</button>
+                        <button class="ui button label m-margin-top-small">数据结构</button>
+                        <button class="ui button label m-margin-top-small">逆元</button>
+                        <!--*/-->
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    $.get('[[@{/submission/statistic/{pid}(pid=${problem.pid})}]]'+'?time=' + new Date().getTime(),
+        {},function (data) {
+            console.log(data);
+            var myChart = echarts.init(document.getElementById('main'));
+            var legendArr=['AC','PE','WA','TLE','MLE','OLE','RE','CE','UE','Running & Judging','Pending'];
+
+            for (let i = 0; i < data.data.length; i++) {
+                // console.log(data.data[i]);
+                data.data[i].name=legendArr[i];
+            }
+            console.log(legendArr);
+
+
+            var option = {
+                legend: {
+                    top: "0%",
+                    data: legendArr,
+                    textStyle: {
+                        color: "rgba(0,0,0,.5)",
+                        fontSize: "12"
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                series: [{
+                    name: 'submit detail',
+                    type: 'pie',
+                    radius: '65%',
+                    center: ['50%', '60%'],
+                    clockwise: false,
+                    data: [{
+                        value: 45,
+                        name: 'Accepted'
+                    }, {
+                        value: 25,
+                        name: 'Wrong Answer'
+                    }, {
+                        value: 15,
+                        name: 'Time Limit Exceeded'
+                    }, {
+                        value: 8,
+                        name: 'Compile Error'
+                    }, {
+                        value: 7,
+                        name: 'Memory Limit Exceeded'
+                    }, {
+                        value: 7,
+                        name: 'System Error'
+                    }, {
+                        value: 7,
+                        name: 'Pending & Judging'
+                    }, {
+                        value: 7,
+                        name: 'Runtime Error'
+                    }],
+                    label: {
+                        show:false
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderWidth: 4,
+                            borderColor: '#ffffff',
+                        },
+                        emphasis: {
+                            borderWidth: 0,
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }],
+                color: [
+                    '#21ba45',
+                    '#e03997',
+                    '#db2828',
+                    '#f2711c',
+                    '#2185d0',
+                    '#00b5ad',
+                    '#a333c8',
+                    '#fbbd08',
+                    '#1b1c1d',
+                    '#767676',
+                    '#e0e1e2'
+                ],
+                backgroundColor: '#fff'
+            };
+
+            option.series[0].data=data.data;
+            myChart.setOption(option);
+            window.addEventListener("resize", function () {
+                myChart.resize();
+            });
+
+        });
+
+
+</script>
+
+<script th:replace="admin/_fragments::script">
+    $('.ui.accordion').accordion();
+
+</script>
+</body>
+</html>

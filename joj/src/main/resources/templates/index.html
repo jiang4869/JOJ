@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Welcome to JOJ</title>
+    <link rel="stylesheet" href="../static/plugin/semanticui/semantic.min.css" th:href="@{/plugin/semanticui/semantic.min.css}">
+    <script src="../static/js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+    <script src="../static/plugin/semanticui/semantic.min.js" th:src="@{/plugin/semanticui/semantic.min.js}"></script>
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!--导航栏-->
+<div class="ui attached" th:replace="_fragments::nav(1)">
+    <div class="ui fluid  container">
+        <div class="ui huge grid secondary pointing  stackable  menu padded m-shadow-small">
+            <a href="#" class="ui item menu toggle icon button m-right-top m-mobile-show">
+                <i class="sidebar icon"></i>
+            </a>
+            <div class="ui header item m-item m-mobile-hide m-text-large m-padded-b-tiny m-text-thin m-opacity-mini">
+                Online Judge
+            </div>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small home icon"></i>Home</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small th icon"></i>Problem</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small bell icon"></i>Contest</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small edit icon"></i>Status</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small trophy icon"></i>Rank</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small file alternate outline icon"></i>Blog</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small envelope icon"></i>Message</a>
+            <a href="#" class="ui item m-item m-mobile-hide"><i class="small paper plane icon"></i>Tool</a>
+            <div class="ui item m-item m-mobile-hide  right floated m-margin-r" style="height: 48px">
+                <a href="#" class="m-margin-r m-black">Login</a>
+                <a href="#" class="m-margin-r m-black">Register</a>
+                <a href="#" class="m-margin-r-medium"><img src="../static/img/35.jpg" class="ui avatar image" style=""></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="m-margin-large m-container-huge">
+    <div class="ui fluid container m-margin-top-large">
+        <div class="ui centered stackable grid">
+
+
+            <div class="twelve wide column">
+                <!-- 公告-->
+                <!--/*-->
+                <div class="ui segment m-shadow-small">
+                    <div class="ui header">Description</div>
+                    <div class="ui divider"></div>
+                    <div class="ui content">
+                        asddfa
+                    </div>
+                </div>
+                <!--*/-->
+                <!--提交详情统计-->
+                <div class="ui segment m-shadow-small">
+                    <div class="ui header">Submit Statistics</div>
+                    <div class="ui divider"></div>
+                    <div class="">
+                        <div id="submitChart" style="min-height: 300px">
+                            <div class="ui active loader"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--比赛列表-->
+                <div id="contestList">
+                    <div th:fragment="contestList" class="ui segment m-shadow-small">
+                        <div class="ui header">Calendar of All Contest</div>
+                        <div class="ui divider"></div>
+                        <table class="ui very basic selectable table center aligned">
+                            <thead>
+                            <tr>
+                                <th>OJName</th>
+                                <th>ContestName</th>
+                                <th>StartTime</th>
+                                <th>EndTime</th>
+                            </tr>
+
+                            </thead>
+                            <tbody>
+                            <tr th:each="contest:${contestList}">
+                                <td th:text="${contest.OJName}"> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " th:href="@{${contest.url}}" target="_blank"> <span th:text="${contest.title}">Codeforces Round #644 (Div. 4)</span> </a></td>
+                                <td th:text="${#dates.format(contest.beginTime,'yyyy-MM-dd HH:mm:ss')}"> 2020-05-24 21:35:00</td>
+                                <td th:text="${#dates.format(contest.endTime,'yyyy-MM-dd HH:mm:ss')}"> 2020-05-24 23:35:00</td>
+                            </tr>
+                            <!--/*-->
+                            <tr>
+                                <td> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " target="_blank"> Codeforces Round #644 (Div.
+                                    3) </a></td>
+                                <td> 2020-05-24 21:35:00</td>
+                                <td> 2020-05-24 23:35:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeChef</td>
+                                <td><a href=" https://www.codechef.com/KM252020?itm_campaign=contest_listing "
+                                       target="_blank"> ketek[i] Match 25.5 </a></td>
+                                <td> 2020-05-24 22:30:00</td>
+                                <td> 2020-05-24 23:30:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeChef</td>
+                                <td><a href=" https://www.codechef.com/COOK118?itm_campaign=contest_listing "
+                                       target="_blank"> May Cook-Off 2020 </a></td>
+                                <td> 2020-05-25 00:00:00</td>
+                                <td> 2020-05-25 02:30:00</td>
+                            </tr>
+                            <tr>
+                                <td> NowCoder</td>
+                                <td><a href=" https://ac.nowcoder.com/acm/contest/5773?from=acm_calendar " target="_blank">
+                                    2020年牛客算法入门课练习赛1 </a></td>
+                                <td> 2020-05-25 19:00:00</td>
+                                <td> 2020-05-25 21:30:00</td>
+                            </tr>
+                            <tr>
+                                <td> NowCoder</td>
+                                <td><a href=" https://ac.nowcoder.com/acm/contest/5803?from=acm_calendar " target="_blank">
+                                    牛客算法周周练8 </a></td>
+                                <td> 2020-05-26 19:00:00</td>
+                                <td> 2020-05-26 21:30:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " target="_blank"> Codeforces Round #644 (Div.
+                                    2) </a></td>
+                                <td> 2020-05-26 22:35:00</td>
+                                <td> 2020-05-27 00:35:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " target="_blank"> Codeforces Round #645 (Div.
+                                    2) </a></td>
+                                <td> 2020-05-26 22:35:00</td>
+                                <td> 2020-05-27 00:35:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " target="_blank"> Educational Codeforces Round
+                                    88 (Rated for Div. 2) </a></td>
+                                <td> 2020-05-28 22:35:00</td>
+                                <td> 2020-05-29 00:35:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeForces</td>
+                                <td><a href=" http://codeforces.com/contests " target="_blank"> Kotlin Heroes: Episode
+                                    4 </a></td>
+                                <td> 2020-05-29 22:35:00</td>
+                                <td> 2020-05-30 01:05:00</td>
+                            </tr>
+                            <tr>
+                                <td> HackerRank</td>
+                                <td><a href=" https://www.hackerrank.com/contestlanding/hack-the-interview-iv/welcome "
+                                       target="_blank"> Hack the Interview IV (U.S.) </a></td>
+                                <td> 2020-05-30 00:00:00</td>
+                                <td> 2020-06-01 12:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> HackerRank</td>
+                                <td><a href=" https://www.hackerrank.com/contestlanding/hack-the-interview-iv-apac/welcome "
+                                       target="_blank"> Hack the Interview IV (Asia Pacific) </a></td>
+                                <td> 2020-05-30 00:00:00</td>
+                                <td> 2020-06-01 12:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> NowCoder</td>
+                                <td><a href=" https://ac.nowcoder.com/acm/contest/5733?from=acm_calendar " target="_blank">
+                                    2020年第十四届山东大学程序设计竞赛（重现赛） </a></td>
+                                <td> 2020-05-30 13:00:00</td>
+                                <td> 2020-05-30 17:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> AtCoder</td>
+                                <td><a href=" https://atcoder.jp/contests/nomura2020 " target="_blank"> NOMURA Programming
+                                    Competition 2020 </a></td>
+                                <td> 2020-05-30 20:00:00</td>
+                                <td> 2020-05-30 22:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> CodeChef</td>
+                                <td><a href=" https://www.codechef.com/LTIME84?itm_campaign=contest_listing "
+                                       target="_blank"> May Lunchtime 2020 </a></td>
+                                <td> 2020-05-30 22:00:00</td>
+                                <td> 2020-05-31 01:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> NowCoder</td>
+                                <td><a href=" https://ac.nowcoder.com/acm/contest/5758?from=acm_calendar " target="_blank">
+                                    “科林明伦杯”哈尔滨理工大学第十届程序设计竞赛(同步赛) </a></td>
+                                <td> 2020-05-31 13:00:00</td>
+                                <td> 2020-05-31 17:00:00</td>
+                            </tr>
+                            <tr>
+                                <td> AtCoder</td>
+                                <td><a href=" https://atcoder.jp/contests/abc169 " target="_blank"> AtCoder Beginner Contest
+                                    169 </a></td>
+                                <td> 2020-05-31 20:00:00</td>
+                                <td> 2020-05-31 21:40:00</td>
+                            </tr>
+                            <!--*/-->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+<footer th:replace="_fragments::footer"></footer>
+
+<script th:replace="_fragments::scriptFragment">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+
+
+<script src="../static/js/echarts.min.js" th:src="@{/js/echarts.min.js}"></script>
+<!--echarts-->
+<script>
+
+    $(function () {
+
+        $.get('[[@{/ojDailyBoard/list}]]',
+            {}, function (data) {
+
+                // console.log(data);
+                
+                var submittedArr=new Array();
+                var acceptedArr=new Array();
+                var dateArr=new Array();
+                for (let i = 0; i < data.length; i++) {
+                    submittedArr.push(data[i].submitCount);
+                    acceptedArr.push(data[i].accepted);
+                    dateArr.push(data[i].collectTime);
+                }
+
+
+                //
+                // console.log(acceptedArr);
+                // console.log(submittedArr);
+                // console.log(dateArr);
+                let date = '2020-05-25';
+                var myChart = echarts.init(document.getElementById('submitChart'));
+
+                var option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter(params) {
+                            // console.log(params);
+                            return `<div>${params[0].axisValue}<br/>${params[0].marker}${params[0].seriesName}：${params[0].value}<br/>${params[1].marker}${params[1].seriesName}：${params[1].value}</div>`
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        left: '5%'
+                    },
+                    grid: {
+                        top: 'middle',
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        height: '80%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], //日期。
+                        axisLine: {
+                            lineStyle: {
+                                color: "#D9D9D9",
+                            }
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        axisTick: {
+                            show: true,
+                        },
+                        boundaryGap: false,
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine: {
+                            lineStyle: {
+                                type: 'dashed',
+                                color: '#E9E9E9',
+                                width: 2
+                            }
+                        },
+                        splitNumber: 5,
+                        show: true,
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisLabel: {
+                            color: '#5F5F5F',
+                            fontSize: 14,
+                        },
+                        splitArea: {
+                            show: false
+                        },
+                    },
+                    series: [{
+                        name: 'Submitted',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80, 20, 30, 80, 10, 90, 50, 80],
+                        color: "#13C7F2",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#13C7F2',
+                            }
+                        },
+                        smooth: false,
+                    }, {
+                        name: 'Accetped',
+                        type: 'line',
+                        symbol: 'circle',
+                        data: [20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60, 20, 25, 70, 5, 90, 40, 60],
+                        color: "#00FF00",
+                        lineStyle: {
+                            normal: {
+                                width: 2.5,
+                                color: '#00FF00',
+                            }
+                        },
+                        smooth: false,
+                    }
+                    ]
+                };
+
+                option.series[0].data=submittedArr;
+                option.series[1].data=acceptedArr;
+                option.xAxis.data=dateArr;
+
+                myChart.setOption(option);
+                window.addEventListener("resize", function () {
+                    myChart.resize();
+                });
+
+            })
+
+    })
+</script>
+
+<!--加载公告，统计记录，比赛列表信息-->
+<script>
+    $(function () {
+        $("#contestList").load('[[@{/calendarContest/list}]]');
+
+    })
+</script>
+</body>
+</html>

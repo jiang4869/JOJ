@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Editor</title>
+    <script src="../../static/js/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+
+
+<div style="width: 80em;border-color: black;">
+    <!--                    <span style="font-weight: 800">Language: &ensp;</span>-->
+    <select class="language">
+        <option value="c_cpp" selected>c</option>
+        <option value="c_cpp">c++</option>
+        <option value="java">java</option>
+        <option value="python">python</option>
+    </select>
+
+
+    <select class="theme">
+        <option value="xcode">xcode</option>
+        <option value="clouds">clouds</option>
+        <option value="clouds_midnight">clouds_midnight</option>
+        <option value="cobalt">cobalt</option>
+        <option value="dawn">dawn</option>
+        <option value="idle_fingers">idle_fingers</option>
+        <option value="kr_theme">kr_theme</option>
+        <option value="merbivore">merbivore</option>
+        <option value="merbivore_soft">merbivore_soft</option>
+        <option value="mono_industrial">mono_industrial</option>
+        <option value="monokai">monokai</option>
+        <option value="nord_dark">nord_dark</option>
+        <option value="pastel_on_dark">pastel_on_dark</option>
+        <option value="solarized_dark">solarized_dark</option>
+        <option value="solarized_light">solarized_light</option>
+        <option value="katzenmilch">katzenmilch</option>
+        <option value="kuroir">kuroir</option>
+        <option value="tomorrow">tomorrow</option>
+        <option value="tomorrow_night">tomorrow_night</option>
+        <option value="tomorrow_night_blue">tomorrow_night_blue</option>
+        <option value="tomorrow_night_bright">tomorrow_night_bright</option>
+        <option value="tomorrow_night_eighties">tomorrow_night_eighties</option>
+        <option value="twilight">twilight</option>
+        <option value="vibrant_ink">vibrant_ink</option>
+    </select>
+
+
+    <pre id="code" style="min-height:400px;"></pre>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript"
+        charset="utf-8"></script>
+<script>
+
+
+    $('.language').change(function () {
+        editor.session.setMode("ace/mode/" + $(this).val());
+    });
+
+    $('.theme').change(function () {
+        editor.setTheme("ace/theme/" + $(this).val());
+    });
+    //初始化对象
+    editor = ace.edit("code");
+
+    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+    theme = "xcode";
+    language = "c_cpp";
+    editor.setTheme("ace/theme/" + theme);
+    editor.session.setMode("ace/mode/" + language);
+
+    //字体大小
+    editor.setFontSize(18);
+
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free");
+
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+
+</script>
+</body>
+</html>
